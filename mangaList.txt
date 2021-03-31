@@ -1,2 +1,2 @@
-Dr. Stone:{Action, Adventure, Comedy, Sci-Fi}:Riichirou Inagaki:Releasing:03-06-2017
-All You Need Is Kill:{Action, Sci-Fi, Military, Seinen}:Hiroshi Sakurazaka,Ryousuke Takeuchi:Completed:01-09-2014
+Dr. Stone:{Action, Adventure, Comedy, Sci-Fi}:{Riichirou Inagaki}:Releasing:03-06-2017
+All You Need Is Kill:{Action, Sci-Fi, Military, Seinen}:{Hiroshi Sakurazaka,Ryousuke Takeuchi}:Completed:01-09-2014
