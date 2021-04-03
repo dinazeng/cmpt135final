@@ -1,4 +1,6 @@
 #include "cmpt_error.h"
+#include "final.h"
+/* ------------------------------------ - ----------------------------------- */
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -11,8 +13,7 @@
 #include <cassert>
 #include <cmath>
 //#include <ncurse>
+
 using namespace std;
 
-int main(){
-    cout << "The beginning of the end." << endl;
-}
+int main() {}
