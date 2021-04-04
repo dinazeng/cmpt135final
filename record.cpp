@@ -31,7 +31,7 @@ class single_record{
         bool getStatus() const { return isReleasing; }
         int getYear() const { return year; }
 
-        //Other functions
+        //add to vector functions
         void add_genre(string newGenre){genres.push_back(newGenre);}
         void add_author(string newAuthor){authors.push_back(newAuthor);}
 
