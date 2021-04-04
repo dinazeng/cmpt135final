@@ -14,6 +14,9 @@ class single_record{
         single_record(string mangaName, vector<string> mangaAuthor):
             name(mangaName), authors(mangaAuthor){}
 
+        //default constructor
+        single_record(){}
+
         // Setters
         void set_name(string newName){name = newName;}
         void set_author(vector<string> newAuthor){authors = newAuthor;}
@@ -31,12 +34,12 @@ class single_record{
         //Other functions
         void add_genre(string newGenre){genres.push_back(newGenre);}
         void add_author(string newAuthor){authors.push_back(newAuthor);}
-    
+
         ~single_record(){}
 
     private:
-        string name;
-        vector<string> authors;
+        string name = "";
+        vector<string> authors = {};
         vector <string> genres = {};
         bool isReleasing = false;
         int year = 0;
