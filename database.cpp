@@ -2,6 +2,7 @@
 //#define FINAL_H
 
 #include "cmpt_error.h"
+#include "record.cpp"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -16,109 +17,102 @@
 //#include <ncurse>
 using namespace std;
 
-struct manga {
+class database {
+    public:
 
-    string title;
-    vector<string> genres;
-    vector<string> authors;
-    string status;
-    string releaseDate;
+        // Default constructor
+        database(){}
 
+        // Reads in each entry in database.txt
+        vector<single_record> readFile (string input){
+            // Reads in the file containing manga manga
+            fstream inFile(input);
+            // Checks if file name is valid
+            while (inFile.fail()){
+                // Asks user if they meant something else. 
+                //Yes = rerun function with correct name
+                //No = quit program
+                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: ";
+                char userAnswer;
+                cin >> userAnswer;
+                if (tolower(userAnswer) == 'n'){
+                    cmpt::error("\nThe file inputted does not exist. Please try again.");}
+                else {
+                    cout << "What is the name of the file?";
+                    string correctInput;
+                    cin >> correctInput;
+                    fstream inFile(correctInput);
+                }
+            }
+
+            // Read in each input from the file
+            vector<single_record> mangaList;
+            while (true){
+                string entry;
+                single_record manga;
+                getline(inFile, entry);
+                if (inFile.fail()){break;}
+
+                // Getting title
+                manga.set_name (entry.substr(0, entry.find(":")));
+                entry = entry.substr(entry.find(":") + 1); // Get rid of trailing :
+
+                // Getting Genres
+                string mangaGenres = entry.substr(0, entry.find(":"));
+                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}:
+                while (true){
+                    string mangaGenre;
+                    if (mangaGenres.find(",") != -1){ // There are remaining genres
+                        mangaGenre = mangaGenres.substr(0, mangaGenres.find(","));
+                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); // Get rid of comma and space
+                        manga.add_genre(mangaGenre);}
+                    else { // Last genre in the list
+                        manga.add_genre(mangaGenres);
+                        break;} 
+                }
+                entry = entry.substr(entry.find(":") + 1);
+                
+                // Getting Authors
+                string mangaAuthors = entry.substr(0, entry.find(":"));
+                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
+                while (true){
+                    string mangaAuthor;
+                    if (mangaAuthors.find(",") != -1){ // There are remaining genres
+                        mangaAuthor = mangaAuthors.substr(0, mangaAuthors.find(","));
+                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); // Get rid of comma and space
+                        manga.add_author(mangaAuthor);}
+                    else { // Last genre in the list
+                        manga.add_author(mangaAuthors);
+                        break;} 
+                }
+                entry = entry.substr(entry.find(":") + 1);
+
+                // Getting Status
+                if (entry.substr(0, entry.find(":")) == "releasing"){manga.set_status(true);}
+                entry = entry.substr(entry.find(":") + 1);
+
+                // Getting Release Date
+                manga.set_year (stoi(entry));
+
+                // Append all this information to mangaList
+                mangaList.push_back(manga);
+            }
+            inFile.close();
+            return mangaList;
+        } 
+
+        // Searching by name
+        single_record searchByName(string userInput){
+            // The case where 
+            for (int i = 0; i < mangaList.size(); i++){
+                if (userInput == mangaList.at(i).getName()){return mangaList.at(i);}}
+        }
+
+        // 
+
+        // Deconstructor
+        ~database(){}
+
+    private:
+        vector<single_record> mangaList = {};
 };
-
-vector<manga> readFile (string input){
-
-    // Reads in the file containing manga mangaInformation
-    fstream inFile(input);
-    // Checks if file name is valid
-    if (inFile.fail()){
-        // Asks user if they meant something else. 
-        //Yes = rerun function with correct name
-        //No = quit program
-        cout << "The file you are looking for does not exist. Did you mean something else? (Y)es or (N)o: ";
-        char userAnswer;
-        cin >> userAnswer;
-        if (tolower(userAnswer) == 'n'){
-            cout << endl;
-            cmpt::error("The file you have specified does not exist. Please try again later.");
-        }
-        else {
-            cout << "What is the name of the file? (Your response requires case sensitivity and '.txt' at the end): ";
-            string correctInput;
-            cin >> correctInput;
-            readFile(correctInput);
-        }
-    }
-
-    // Read in each input from the file
-    vector<manga> mangaList;
-    while (true){
-
-        string entry;
-        manga mangaInformation;
-        getline(inFile, entry);
-
-        if (inFile.fail()){
-            break;
-        }
-
-        // Getting title
-        string mangaTitle = entry.substr(0, entry.find(":"));
-        mangaInformation.title = mangaTitle; 
-        entry = entry.substr(entry.find(":") + 1); // Get rid of trailing :
-
-        // Getting Genres
-        string mangaGenres = entry.substr(0, entry.find(":"));
-        mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}:
-        bool gotGenres = false;
-        while (gotGenres == false){
-            string mangaGenre;
-            if (mangaGenres.find(",") != -1){ // There are remaining genres
-                mangaGenre = mangaGenres.substr(0, mangaGenres.find(","));
-                mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); // Get rid of comma and space
-                mangaInformation.genres.push_back(mangaGenre);
-            }
-            else { // Last genre in the list
-                mangaGenre = mangaGenres;
-                mangaInformation.genres.push_back(mangaGenre);
-                gotGenres = true;
-            } 
-        }
-        entry = entry.substr(entry.find(":") + 1);
-        
-        // Getting Authors
-        string mangaAuthors = entry.substr(0, entry.find(":"));
-        mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
-        bool gotAuthors = false;
-        while (gotAuthors == false){
-            string mangaAuthor;
-            if (mangaAuthors.find(",") != -1){ // There are remaining genres
-                mangaAuthor = mangaAuthors.substr(0, mangaAuthors.find(","));
-                mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); // Get rid of comma and space
-                mangaInformation.authors.push_back(mangaAuthor);
-            }
-            else { // Last genre in the list
-                mangaAuthor = mangaAuthors;
-                mangaInformation.authors.push_back(mangaAuthor);
-                gotAuthors = true;
-            } 
-        }
-        entry = entry.substr(entry.find(":") + 1);
-
-        // Getting Status
-        string mangaStatus = entry.substr(0, entry.find(":"));
-        mangaInformation.status = mangaStatus;
-        entry = entry.substr(entry.find(":") + 1);
-
-        // Getting Release Date
-        string mangaDate = entry;
-        mangaInformation.releaseDate = mangaDate;
-
-        // Append all this information to mangaList
-        mangaList.push_back(mangaInformation);
-    }
-
-    inFile.close();
-    return mangaList;
-
-} 
