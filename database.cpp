@@ -117,8 +117,8 @@ class database {
         vector<single_record> mangaList = {};
 };
 
-int main(){
+/* int main(){
     cout << "The beginning of the end." << endl;
     database mangaList;
     vector<single_record> mangaList = mangaList.readFile("database.txt");
-}
+} */
