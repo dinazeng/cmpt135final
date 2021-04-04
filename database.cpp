@@ -1,5 +1,5 @@
 #include "cmpt_error.h"
-#include "database.cpp"
+#include "database.h"
 #include "record.h"
 #include <iostream>
 #include <vector>
