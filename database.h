@@ -24,7 +24,7 @@ class database {
         vector<single_record> searchByYear (int yearStart, int yearEnd);
 
         // Getters
-        vector<single_record> getMangaList() const {return mangaList;}
+        vector<single_record> getMangaList() const;
         
         // Deconstructor
         ~database();

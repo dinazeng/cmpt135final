@@ -122,7 +122,7 @@ class database {
                     searchResults.push_back(manga);
                 }
             }
-            return searchResults
+            return searchResults;
         }
 
         // Getters
