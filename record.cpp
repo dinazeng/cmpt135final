@@ -1,5 +1,6 @@
 //record class
 #include "cmpt_error.h"
+#include "record.h"
 #include <iostream>
 #include <vector>
 #include <string>
