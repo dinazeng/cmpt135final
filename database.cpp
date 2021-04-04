@@ -93,13 +93,40 @@ class database {
         } 
 
         // Searching by name
-        single_record searchByName(string userInput){
-            // The case where 
+        single_record searchByName (string name){
+            // The case where user enters in exact name of manga
             for (int i = 0; i < mangaList.size(); i++){
-                if (userInput == mangaList.at(i).getName()){return mangaList.at(i);}}
+                if (name == mangaList.at(i).getName()){return mangaList.at(i);}}
+            // The case where user enters in a "substring" of the name of manga
+            for (int i = 0; i < mangaList.size(); i++){
+                if (mangaList.at(i).getName().find(name) != 1){return mangaList.at(i);}}
         }
 
-        // 
+        // Searching by exact year
+        vector<single_record> searchByYear (int year){
+            // For each manga with matching year, append to searchResults and return at end
+            vector<single_record> searchResults;
+            for (single_record manga : mangaList){
+                if (manga.getYear() == year){
+                    searchResults.push_back(manga);
+                }
+            }
+            return searchResults;
+        }
+        // Searching by year range
+        vector<single_record> searchByYear (int yearStart, int yearEnd){
+            // For each manga within year range, append to searchResults and return at end
+            vector<single_record> searchResults;
+            for (single_record manga: mangaList){
+                if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
+                    searchResults.push_back(manga);
+                }
+            }
+            return searchResults
+        }
+
+        // Getters
+        vector<single_record> getMangaList() const {return mangaList;}
 
         // Deconstructor
         ~database(){}
