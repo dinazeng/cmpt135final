@@ -18,8 +18,8 @@ struct manga {
     string title;
     vector<string> genres;
     vector<string> authors;
-    string status;
-    string releaseDate;
+    bool isReleasing;
+    int releaseYear;
 
 };
 
@@ -104,12 +104,18 @@ vector<manga> readFile (string input){
 
         // Getting Status
         string mangaStatus = entry.substr(0, entry.find(":"));
-        mangaInformation.status = mangaStatus;
+        if (mangaStatus == "releasing"){
+            mangaInformation.isReleasing = true;
+        }
+        else {
+            mangaInformation.isReleasing = false;
+        }
+        //mangaInformation.status = mangaStatus;
         entry = entry.substr(entry.find(":") + 1);
 
         // Getting Release Date
         string mangaDate = entry;
-        mangaInformation.releaseDate = mangaDate;
+        mangaInformation.releaseYear = stoi(mangaDate);
 
         // Append all this information to mangaList
         mangaList.push_back(mangaInformation);
