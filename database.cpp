@@ -2,7 +2,7 @@
 //#define FINAL_H
 
 #include "cmpt_error.h"
-#include "record.cpp"
+#include "record.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
