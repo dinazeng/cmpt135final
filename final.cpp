@@ -1,6 +1,5 @@
 #include "cmpt_error.h"
 #include "final.h"
-/* ------------------------------------ - ----------------------------------- */
 #include <iostream>
 #include <cstdlib>
 #include <ctime>

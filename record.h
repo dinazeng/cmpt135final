@@ -10,8 +10,6 @@ class single_record{
         single_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
                       bool mangaStatus, int releaseYear);
 
-        single_record(string mangaName, vector<string> mangaAuthor);
-
         //default constructor
         single_record(){}
 

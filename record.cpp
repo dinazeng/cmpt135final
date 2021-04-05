@@ -1,40 +1,35 @@
-//record class
+//record.h class
+
 #include "cmpt_error.h"
-#include "record.h"
 #include <iostream>
 #include <vector>
-#include <string>
 using namespace std;
 
 class single_record{
     public:
         single_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
-                      bool mangaStatus, int releaseYear): name(mangaName), authors(mangaAuthor),
-                      genres(mangaGenres), isReleasing(mangaStatus), year(releaseYear){}
-
-        single_record(string mangaName, vector<string> mangaAuthor):
-            name(mangaName), authors(mangaAuthor){}
+                      bool mangaStatus, int releaseYear);
 
         //default constructor
         single_record(){}
 
         // Setters
-        void set_name(string newName){name = newName;}
-        void set_author(vector<string> newAuthor){authors = newAuthor;}
-        void set_genres(vector <string> newGenres) {genres = newGenres;}
-        void set_status (bool newStat){isReleasing = newStat;}
-        void set_year(int newYear){year = newYear;}
+        void set_name(string newName);
+        void set_authors(vector<string> newAuthor);
+        void set_genres(vector <string> newGenres);
+        void set_status (bool newStat);
+        void set_year(int newYear);
     
         // Getters
-        string getName() const { return name; }
-        vector<string> getAuthor() const { return authors; }
-        vector<string> getGenres() const { return genres; }
-        bool getStatus() const { return isReleasing; }
-        int getYear() const { return year; }
+        string getName() const;
+        vector<string> getAuthors() const;
+        vector<string> getGenres() const;
+        bool getStatus() const;
+        int getYear() const;
 
         //add to vector functions
-        void add_genre(string newGenre){genres.push_back(newGenre);}
-        void add_author(string newAuthor){authors.push_back(newAuthor);}
+        void add_genre(string newGenre);
+        void add_author(string newAuthor);
 
         ~single_record(){}
 
