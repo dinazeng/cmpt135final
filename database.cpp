@@ -229,7 +229,7 @@ class database {
         // Displaying a manga's information
         void displayInformation(int index, single_record manga){
             cout << "Entry #" << index + 1 << endl;
-            cout << "==========================================" << endl;
+            cout << "=========================================" << endl;
             cout << "Name: " << manga.getName() << "." << endl;
 
             cout << "Genres: ";
