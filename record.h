@@ -15,7 +15,7 @@ class single_record{
 
         // Setters
         void set_name(string newName);
-        void set_authors(vector<string> newAuthor);
+        void set_author(vector<string> newAuthor);
         void set_genres(vector <string> newGenres);
         void set_status (bool newStat);
         void set_year(int newYear);

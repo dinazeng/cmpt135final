@@ -8,18 +8,19 @@
 #include <string>
 using namespace std;
 
-
 class menu{
     public:
+        //default and only constructor
         menu(){
-            cout << "Welcome to the Manga Database!\n";
-            cout << "-----------------------------\n";
+            cout << "Welcome to the Manga Database!\n-----------------------------\n";
+            //continues until user selects quit
             while (response != "q"){
                 printMenu();
+                //adding a manga into the database
                 if (response == "a"){
                     cout << "You are currently: adding a new entry.\n";
 
-                    cout << "Enter the manga name\n";
+                    cout << "\nEnter the manga name\n";
                     string name;
                     getline (cin, name);
 
@@ -61,27 +62,172 @@ class menu{
 
                     cout << "You have successfully entered a new entry.\n";
                 }
-                else if (response == "f"){}
-                else if (response == "d"){}
-                else if (response == "l"){}
-                else if (response == "q"){}
-                else{}
+                //finding a manga by its name or year of release in the database
+                else if (response == "f"){
+                    cout << "You are currently: finding an entry.\n"
+                         << "\nYou can search by:\n"
+                         << "(N)ame of manga\n"
+                         << "(Y)ear of release\n"
+                         << "\n(R)eturn to main menu\n"
+                         << "\nEnter the letter of your choice:";
+                    
+                    string userResponse;
+                    cin >> userResponse;
+                    userResponse = toLowerStr(userResponse);
+                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
+                        cout << "Your response is invalid. Please Try Again.\n";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);}
+
+                    if(userResponse == "n"){
+                        cout << "Enter the name of the manga you are searching for:";
+                        string mangaName;
+                        getline (cin, mangaName);
+                        info-> searchByName(mangaName);}
+
+                    else if (userResponse == "y"){
+                        cout << "Are you searching for a (S)pecific year or a (R)ange:";
+                        string userResponse;
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "s" && userResponse != "r"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "s"){
+                            cout << "What year are you looking for? ";
+                            int year;
+                            cin >> year;
+                            info->searchByYear(year);}
+                        
+                        else{
+                            int startYear;
+                            int endYear;
+                            cout << "Enter the starting year: ";
+                            cin >> startYear;
+                            cout << "Enter the ending year: ";
+                            cin >> endYear;
+                            info -> searchByYear(startYear, endYear);}
+                    }
+                }
+                //delete a manga by its name or year of release in the database
+                else if (response == "d"){
+                    cout << "You are currently: deleting an entry.\n"
+                         << "\nYou can delete by:\n"
+                         << "(N)ame of manga\n"
+                         << "(Y)ear of release\n"
+                         << "\n(R)eturn to main menu\n"
+                         << "\nEnter the letter of your choice:";
+                    
+                    string userResponse;
+                    cin >> userResponse;
+                    userResponse = toLowerStr(userResponse);
+                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
+                        cout << "Your response is invalid. Please Try Again.\n";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);}
+
+                    if(userResponse == "n"){
+                        cout << "Enter the name of the manga you are deleting:";
+                        string mangaName;
+                        getline (cin, mangaName);
+                        info-> deleteByName(mangaName);}
+
+                    else if (userResponse == "y"){
+                        cout << "Are you deleting a (S)pecific year or a (R)ange:";
+                        string userResponse;
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "s" && userResponse != "r"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "s"){
+                            cout << "What year are you deleting? ";
+                            int year;
+                            cin >> year;
+                            info->deleteByYear(year);}
+                        
+                        else{
+                            int startYear;
+                            int endYear;
+                            cout << "Enter the starting year: ";
+                            cin >> startYear;
+                            cout << "Enter the ending year: ";
+                            cin >> endYear;
+                            info -> deleteByYear(startYear, endYear);}
+                    }
+                }
+                //list the database by alphatical order or numerical order
+                else if (response == "l"){
+                    cout << "You are currently: listing entries.\n"
+                         << "\nYou can list by:\n"
+                         << "(N)ame of manga\n"
+                         << "(Y)ear of release\n"
+                         << "\n(R)eturn to main menu\n"
+                         << "\nEnter the letter of your choice:";
+                    
+                    string userResponse;
+                    cin >> userResponse;
+                    userResponse = toLowerStr(userResponse);
+                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
+                        cout << "Your response is invalid. Please Try Again.\n";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);}
+
+                    if(userResponse == "n"){
+                        cout << "Did you want them listed in (A)lphabetical order or" 
+                             << " in (R)everse alphabetical order?";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "a" && userResponse != "r"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "a"){info->listAlphabetical();}
+                        else {info->listAlphabeticalReverse();}
+                    }
+
+                    else if (userResponse == "y"){
+                        cout << "Did you want them listed in (A)scending order or" 
+                             << " in (D)escending order?";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "a" && userResponse != "d"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "a"){info->listNumerical();}
+                        else {info->listNumericalReverse();}
+                    }
+                } 
+                //stops the program
+                else if (response == "q"){
+                    delete info;
+                    cout << "Have a great day!!\n";}
+                //if the case where the user does not respond correctly
+                else{cout << "Sorry, your response is invalid. Please try again.\n";}
             }
-            delete info;
-            cout << "Have a great day!!";
         }
 
+        //prints the available choices in menu
         void printMenu(){
-            cout << "\n(A)dd a manga.\n";
-            cout << "(F)ind a manga.\n";
-            cout << "(D)elete a manga.\n";
-            cout << "(L)ist mangas.\n";
-            cout << "(Q)uit.\n\n";
-            cout << "Enter the LETTER of your choice:\n";
+            cout << "\nMain Menu:\n"
+                 << "\n(A)dd a manga.\n"
+                 << "(F)ind a manga.\n"
+                 << "(D)elete a manga.\n"
+                 << "(L)ist mangas.\n"
+                 << "(Q)uit.\n\n"
+                 << "Enter the LETTER of your choice:\n";
             cin >> response;
             if (response.length() != 0){response [0] = tolower(response[0]);}
         }
         
+        //changes all characters in a string to lower case
         string toLowerStr (string str){
             string returnStr = "";
             for (int pos = 0; pos < str.length(); pos++){
