@@ -250,24 +250,8 @@ class database {
 
         vector<single_record> listAlphabeticalReverse(){
             // Using selection sort, sort the manga based on the first character of names
-            int minIndex;
-            vector<single_record> alphabeticalListReverse = mangaList;
-
-            // Iteration for beginning index in unsorted section of alphabeticalListReverse
-            for (int i = 0; i < alphabeticalListReverse.size() - 1; i++){
-                // Finding the minimum element in the current unsorted alphabeticalListReverse
-                // Set index of the 'minimum element' default to the first index of unsorted alphabeticalListReverse
-                minIndex = i;
-                // Iterate through the unsorted section of the vector
-                for (int j = i + 1; j < alphabeticalListReverse.size(); j++){
-                    // Compare the first letters of the titles
-                    if (alphabeticalListReverse.at(j).getName().at(0) > alphabeticalListReverse.at(minIndex).getName().at(0)){
-                        minIndex = j;
-                    }
-                }
-                // Swap element at the minIndex with beginning of unsorted vector
-                swap(alphabeticalListReverse.at(minIndex), alphabeticalListReverse.at(i));
-            }
+            vector<single_record> alphabeticalListReverse = listAlphabetical;
+            reverse(alphabeticalListReverse.begin(), alphabeticalListReverse.end());
             return alphabeticalListReverse;
         }
 
@@ -285,16 +269,9 @@ class database {
         }
 
         vector<single_record> listNumericalReverse(){
-            vector <single_record> numericalList = mangaList;
-            for (int start = 0; start < numericalList.size()-1; start++){
-		        int max = start;
-		        for (int check = start + 1; check < numericalList.size(); check++){
-			        if (numericalList.at(check).getYear() > numericalList.at(max).getYear()){
-                        max = check;}}
-		            single_record temp = numericalList.at(max);
-		            numericalList.at(max) = numericalList.at(start);
-		        numericalList.at(start) = temp;}
-	        return mangaList; 
+            vector <single_record> numericalList = listNumerical();
+            reverse (numericalList.begin(), numericalList.end());
+            return numericalList;
         }
 
         // Getters
