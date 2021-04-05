@@ -8,13 +8,15 @@
 #include <string>
 using namespace std;
 
-
 class menu{
     public:
+        //default and only constructor
         menu(){
             cout << "Welcome to the Manga Database!\n-----------------------------\n";
+            //continues until user selects quit
             while (response != "q"){
                 printMenu();
+                //adding a manga into the database
                 if (response == "a"){
                     cout << "You are currently: adding a new entry.\n";
 
@@ -60,6 +62,7 @@ class menu{
 
                     cout << "You have successfully entered a new entry.\n";
                 }
+                //finding a manga by its name or year of release in the database
                 else if (response == "f"){
                     cout << "You are currently: finding an entry.\n"
                          << "\nYou can search by:\n"
@@ -108,6 +111,7 @@ class menu{
                             info -> searchByYear(startYear, endYear);}
                     }
                 }
+                //delete a manga by its name or year of release in the database
                 else if (response == "d"){
                     cout << "You are currently: deleting an entry.\n"
                          << "\nYou can delete by:\n"
@@ -156,6 +160,7 @@ class menu{
                             info -> deleteByYear(startYear, endYear);}
                     }
                 }
+                //list the database by alphatical order or numerical order
                 else if (response == "l"){
                     cout << "You are currently: listing entries.\n"
                          << "\nYou can list by:\n"
@@ -200,13 +205,16 @@ class menu{
                         else {info->listNumericalReverse();}
                     }
                 } 
+                //stops the program
                 else if (response == "q"){
                     delete info;
                     cout << "Have a great day!!\n";}
+                //if the case where the user does not respond correctly
                 else{cout << "Sorry, your response is invalid. Please try again.\n";}
             }
         }
 
+        //prints the available choices in menu
         void printMenu(){
             cout << "\nMain Menu:\n"
                  << "\n(A)dd a manga.\n"
@@ -219,6 +227,7 @@ class menu{
             if (response.length() != 0){response [0] = tolower(response[0]);}
         }
         
+        //changes all characters in a string to lower case
         string toLowerStr (string str){
             string returnStr = "";
             for (int pos = 0; pos < str.length(); pos++){
