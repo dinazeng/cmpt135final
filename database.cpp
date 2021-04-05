@@ -250,7 +250,7 @@ class database {
 
         vector<single_record> listAlphabeticalReverse(){
             // Using selection sort, sort the manga based on the first character of names
-            vector<single_record> alphabeticalListReverse = listAlphabetical;
+            vector<single_record> alphabeticalListReverse = listAlphabetical();
             reverse(alphabeticalListReverse.begin(), alphabeticalListReverse.end());
             return alphabeticalListReverse;
         }
