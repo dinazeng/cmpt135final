@@ -260,38 +260,6 @@ class database {
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }
 
-        // Displaying a manga's information
-        void displayInformation(int index, single_record manga){
-            cout << "Entry #" << index + 1 << endl;
-            cout << "=========================================" << endl;
-            cout << "Name: " << manga.getName() << "." << endl;
-
-            cout << "Genres: ";
-            vector<string> genres = manga.getGenres();
-            for (int i = 0; i < genres.size() - 1; i++){
-                cout << genres.at(i) << ", ";
-            }
-            cout << genres.at(genres.size() - 1) << "." << endl;
-
-            cout << "Authors: ";
-
-            vector<string> authors = manga.getAuthor();
-            for (int i = 0; i < authors.size() - 1; i++){
-                cout << authors.at(i) << ", ";
-            }
-            cout << authors.at(authors.size() - 1) << "." << endl;
-
-            cout << "Status: ";
-            if (manga.getStatus() == true){
-                cout << "Releasing." << endl;
-            }
-            else {
-                cout << "Completed." << endl;
-            }
-
-            cout << "Year of release: " << manga.getYear() << "." << endl;
-        }
-
         // Deconstructor
         ~database(){}
 
