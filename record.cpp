@@ -11,18 +11,18 @@ class single_record{
                       bool mangaStatus, int releaseYear);
 
         //default constructor
-        single_record(){}
+        //single_record(){}
 
         // Setters
         void set_name(string newName);
-        void set_author(vector<string> newAuthor);
+        void set_authors(vector<string> newAuthor);
         void set_genres(vector <string> newGenres);
         void set_status (bool newStat);
         void set_year(int newYear);
     
         // Getters
         string getName() const;
-        vector<string> getAuthor() const;
+        vector<string> getAuthors() const;
         vector<string> getGenres() const;
         bool getStatus() const;
         int getYear() const;

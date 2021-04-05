@@ -156,7 +156,50 @@ class menu{
                             info -> deleteByYear(startYear, endYear);}
                     }
                 }
-                else if (response == "l"){}
+                else if (response == "l"){
+                    cout << "You are currently: listing entries.\n"
+                         << "\nYou can list by:\n"
+                         << "(N)ame of manga\n"
+                         << "(Y)ear of release\n"
+                         << "\n(R)eturn to main menu\n"
+                         << "\nEnter the letter of your choice:";
+                    
+                    string userResponse;
+                    cin >> userResponse;
+                    userResponse = toLowerStr(userResponse);
+                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
+                        cout << "Your response is invalid. Please Try Again.\n";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);}
+
+                    if(userResponse == "n"){
+                        cout << "Did you want them listed in (A)lphabetical order or" 
+                             << " in (R)everse alphabetical order?";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "a" && userResponse != "r"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "a"){info->listAlphabetical();}
+                        else {info->listAlphabeticalReverse();}
+                    }
+
+                    else if (userResponse == "y"){
+                        cout << "Did you want them listed in (A)scending order or" 
+                             << " in (D)escending order?";
+                        cin >> userResponse;
+                        userResponse = toLowerStr(userResponse);
+                        while (userResponse != "a" && userResponse != "d"){
+                            cout << "Your response is invalid. Please Try Again.\n";
+                            cin >> userResponse;
+                            userResponse = toLowerStr(userResponse);}
+                        
+                        if (userResponse == "a"){info->listNumerical();}
+                        else {info->listNumericalReverse();}
+                    }
+                } 
                 else if (response == "q"){
                     delete info;
                     cout << "Have a great day!!\n";}
