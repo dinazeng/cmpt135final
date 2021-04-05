@@ -1,3 +1,4 @@
+
 #include "cmpt_error.h"
 #include "record.h"
 #include <iostream>
@@ -36,7 +37,10 @@ class database {
         void deleteConfirmationYear (vector<single_record> searchResults);
 
         // Getters
-        vector<single_record> getMangaList() const {return mangaList;}
+        vector<single_record> getMangaList() const;
+
+        //Modify the vector
+        void add_entry (single_record newEntry);
 
         // Displaying a manga's information
         void displayInformation(int index, single_record manga);

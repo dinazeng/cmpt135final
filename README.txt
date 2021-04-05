@@ -3,10 +3,13 @@ CMPT 135 Assignment 5
 
 Names of Team Members
 ---------------------
+Dina Hui Zeng
+301421388
+dhz1@sfu.ca
 
-(include the full names, SFU email addresses, and SFU student numbers of all
-team members)
-
+Yejun (Jonathan) Kang
+301428398
+yka92@sfu.ca
 
 Instructions for Compiling and Running
 --------------------------------------
@@ -23,7 +26,7 @@ Limitations
 
 Known Bugs
 ----------
-
+--if the user makes a mistake while entering information, it would be hard to catch
 (list all known bugs here)
 
 
