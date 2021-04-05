@@ -243,7 +243,7 @@ class database {
             cout << genres.at(genres.size() - 1) << "." << endl;
 
             cout << "Authors: ";
-            vector<string> authors = manga.getAuthor();
+            vector<string> authors = manga.getAuthors();
             for (int i = 0; i < authors.size() - 1; i++){
                 cout << authors.at(i) << ", ";
             }
@@ -275,7 +275,7 @@ class database {
 
             cout << "Authors: ";
 
-            vector<string> authors = manga.getAuthor();
+            vector<string> authors = manga.getAuthors();
             for (int i = 0; i < authors.size() - 1; i++){
                 cout << authors.at(i) << ", ";
             }
