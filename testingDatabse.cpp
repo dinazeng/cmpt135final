@@ -1,12 +1,52 @@
 #include "cmpt_error.h"
-#include "database.h"
-#include "record.h"
+//#include "database.h"
+//#include "record.h"
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <fstream>
 using namespace std;
+
+class single_record{
+    public:
+        single_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
+                      bool mangaStatus, int releaseYear): name(mangaName), authors(mangaAuthor),
+                      genres(mangaGenres), isReleasing(mangaStatus), year(releaseYear){}
+
+        single_record(string mangaName, vector<string> mangaAuthor):
+            name(mangaName), authors(mangaAuthor){}
+
+        //default constructor
+        single_record(){}
+
+        // Setters
+        void set_name(string newName){name = newName;}
+        void set_authors(vector<string> newAuthor){authors = newAuthor;}
+        void set_genres(vector <string> newGenres) {genres = newGenres;}
+        void set_status (bool newStat){isReleasing = newStat;}
+        void set_year(int newYear){year = newYear;}
+    
+        // Getters
+        string getName() const { return name; }
+        vector<string> getAuthors() const { return authors; }
+        vector<string> getGenres() const { return genres; }
+        bool getStatus() const { return isReleasing; }
+        int getYear() const { return year; }
+
+        //add to vector functions
+        void add_genre(string newGenre){genres.push_back(newGenre);}
+        void add_author(string newAuthor){authors.push_back(newAuthor);}
+
+        ~single_record(){}
+
+    private:
+        string name = "";
+        vector<string> authors = {};
+        vector <string> genres = {};
+        bool isReleasing = false;
+        int year = 0;
+};
 
 class database {
     public:
@@ -90,7 +130,6 @@ class database {
             }
             inFile.close();
             this->mangaList = mangaList;
-            //return mangaList;
         } 
 
 /* -------------------------- Searching for records ------------------------- */
@@ -229,7 +268,7 @@ class database {
         // Displaying a manga's information
         void displayInformation(int index, single_record manga){
             cout << "Entry #" << index + 1 << endl;
-            cout << "=========================================" << endl;
+            cout << "==========================================" << endl;
             cout << "Name: " << manga.getName() << "." << endl;
 
             cout << "Genres: ";
@@ -240,8 +279,7 @@ class database {
             cout << genres.at(genres.size() - 1) << "." << endl;
 
             cout << "Authors: ";
-
-            vector<string> authors = manga.getAuthor();
+            vector<string> authors = manga.getAuthors();
             for (int i = 0; i < authors.size() - 1; i++){
                 cout << authors.at(i) << ", ";
             }
@@ -265,3 +303,20 @@ class database {
         vector<single_record> mangaList = {};
 };
 
+/* int main(){
+    cout << "The beginning of the end." << endl << endl;
+
+    database mangaDatabase;
+    vector<single_record> mangaList = mangaDatabase.readFile("database.txt");
+
+    // Testing for displayInformation
+    for (int i = 0; i < mangaList.size(); i++){
+        mangaDatabase.displayInformation(i, mangaList.at(i));
+        cout << endl;
+    }
+
+    // Testing for deleteConfirmation by name
+    mangaDatabase.deleteByName("Solo Leveling");
+
+    cout << "End of testing." << endl;
+} */

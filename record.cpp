@@ -20,14 +20,14 @@ class single_record{
 
         // Setters
         void set_name(string newName){name = newName;}
-        void set_author(vector<string> newAuthor){authors = newAuthor;}
+        void set_authors(vector<string> newAuthor){authors = newAuthor;}
         void set_genres(vector <string> newGenres) {genres = newGenres;}
         void set_status (bool newStat){isReleasing = newStat;}
         void set_year(int newYear){year = newYear;}
     
         // Getters
         string getName() const { return name; }
-        vector<string> getAuthor() const { return authors; }
+        vector<string> getAuthors() const { return authors; }
         vector<string> getGenres() const { return genres; }
         bool getStatus() const { return isReleasing; }
         int getYear() const { return year; }
