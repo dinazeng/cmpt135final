@@ -5,7 +5,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <fstream>
 using namespace std;
 
@@ -245,16 +244,25 @@ class database {
 		        for (int check = start + 1; check < numericalList.size(); check++){
 			        if (numericalList.at(check).getYear() < numericalList.at(min).getYear()){
                         min = check;}}
-		            single_record temp = numericalList.at(min);
-		            numericalList.at(min) = numericalList.at(start);
+
+		        single_record temp = numericalList.at(min);
+		        numericalList.at(min) = numericalList.at(start);
 		        numericalList.at(start) = temp;}
-	        return mangaList;   
+	        return numericalList;   
         }
 
         vector<single_record> listNumericalReverse(){
-            vector <single_record> numericalList = listNumerical();
-            reverse (numericalList.begin(), numericalList.end());
-            return numericalList;
+            vector <single_record> numericalList = mangaList;
+            for (int start = 0; start < numericalList.size()-1; start++){
+		        int max = start;
+		        for (int check = start + 1; check < numericalList.size(); check++){
+			        if (numericalList.at(check).getYear() > numericalList.at(max).getYear()){
+                        max = check;}}
+
+		        single_record temp = numericalList.at(max);
+		        numericalList.at(max) = numericalList.at(start);
+		        numericalList.at(start) = temp;}
+	        return numericalList;   
         }
 
         // Getters
@@ -285,6 +293,7 @@ class database {
 
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }
+
 
         // Deconstructor
         ~database(){}
