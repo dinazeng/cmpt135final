@@ -110,6 +110,8 @@ class database {
                 if (manga.getYear() == year){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
         // Searching by year range
@@ -120,6 +122,8 @@ class database {
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
 
@@ -130,7 +134,7 @@ class database {
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (userConfirmation){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl;
                         return;}
@@ -142,12 +146,13 @@ class database {
             for (int i = 0; i < mangaList.size(); i++){
                 if (mangaList.at(i).getName().find(name) != 1){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (userConfirmation){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl;
                     }
                     else {cout << "Entry not deleted." << endl;}
                 }}
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
         }
         // Searching by exact year
         void deleteByYear (int year){
@@ -156,11 +161,13 @@ class database {
             for (single_record manga : mangaList){
                 if (manga.getYear() == year){searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
             // Display all matched entries and ask user for which one they want to delete
             for (int i = 0; i < searchResults.size(); i++){
                 displayInformation(i, searchResults.at(i));
             }
-
             deleteConfirmationYear(searchResults);
         }
         // Searching by year range
@@ -171,6 +178,9 @@ class database {
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
             deleteConfirmationYear(searchResults);
         }
 
@@ -293,7 +303,6 @@ class database {
 
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }
-
 
         // Deconstructor
         ~database(){}
