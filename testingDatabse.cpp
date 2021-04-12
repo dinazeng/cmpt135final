@@ -130,6 +130,7 @@ class database {
             }
             inFile.close();
             this->mangaList = mangaList;
+            //return mangaList;
         } 
 
 /* -------------------------- Searching for records ------------------------- */
@@ -262,13 +263,67 @@ class database {
 
         }
 
-        // Getters
-        vector<single_record> getMangaList() const {return mangaList;}
+/* -------------- Listing records in multiple different orders -------------- */
+        vector<single_record> listAlphabetical(){
 
+            // Using selection sort, sort the manga based on the first character of names
+            int minIndex;
+            vector<single_record> alphabeticalList = mangaList;
+
+            // Iteration for beginning index in unsorted section of alphabeticalList
+            for (int i = 0; i < alphabeticalList.size() - 1; i++){
+                // Finding the minimum element in the current unsorted alphabeticalList
+                // Set index of the 'minimum element' default to the first index of unsorted alphabeticalList
+                minIndex = i;
+                // Iterate through the unsorted section of the vector
+                for (int j = i + 1; j < alphabeticalList.size(); j++){
+                    // Compare the first letters of the titles
+                    if (alphabeticalList.at(j).getName().at(0) < alphabeticalList.at(minIndex).getName().at(0)){
+                        minIndex = j;
+                    }
+                }
+                // Swap element at the minIndex with beginning of unsorted vector
+                swap(alphabeticalList.at(minIndex), alphabeticalList.at(i));
+            }
+            return alphabeticalList;
+        }
+
+        vector<single_record> listAlphabeticalReverse(){
+            // Using selection sort, sort the manga based on the first character of names
+            vector<single_record> alphabeticalListReverse = listAlphabetical();
+            reverse(alphabeticalListReverse.begin(), alphabeticalListReverse.end());
+            return alphabeticalListReverse;
+        }
+
+        vector<single_record> listNumerical(){
+            vector <single_record> numericalList = mangaList;
+            for (int start = 0; start < numericalList.size()-1; start++){
+		        int min = start;
+		        for (int check = start + 1; check < numericalList.size(); check++){
+			        if (numericalList.at(check).getYear() < numericalList.at(min).getYear()){
+                        min = check;}}
+		            single_record temp = numericalList.at(min);
+		            numericalList.at(min) = numericalList.at(start);
+		        numericalList.at(start) = temp;}
+	        return mangaList;   
+        }
+
+        vector<single_record> listNumericalReverse(){
+            vector <single_record> numericalList = listNumerical();
+            reverse (numericalList.begin(), numericalList.end());
+            return numericalList;
+        }
+
+        // Getters
+        vector<single_record> getMangaList() const;
+
+        //Modify the vector
+        void add_entry (single_record newEntry){mangaList.push_back(newEntry);}
+        
         // Displaying a manga's information
         void displayInformation(int index, single_record manga){
             cout << "Entry #" << index + 1 << endl;
-            cout << "==========================================" << endl;
+            cout << "=========================================" << endl;
             cout << "Name: " << manga.getName() << "." << endl;
 
             cout << "Genres: ";
@@ -302,6 +357,7 @@ class database {
     private:
         vector<single_record> mangaList = {};
 };
+
 
 /* int main(){
     cout << "The beginning of the end." << endl << endl;
