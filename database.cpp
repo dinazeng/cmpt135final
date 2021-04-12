@@ -5,7 +5,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <fstream>
 using namespace std;
 
@@ -102,6 +101,8 @@ class database {
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 if (mangaList.at(i).getName().find(name) != 1){return mangaList.at(i);}}
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+            return;
         }
         // Searching by exact year
         vector<single_record> searchByYear (int year){
@@ -111,6 +112,8 @@ class database {
                 if (manga.getYear() == year){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
         // Searching by year range
@@ -121,6 +124,8 @@ class database {
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
 
@@ -131,7 +136,7 @@ class database {
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (userConfirmation){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl;
                         return;}
@@ -143,12 +148,13 @@ class database {
             for (int i = 0; i < mangaList.size(); i++){
                 if (mangaList.at(i).getName().find(name) != 1){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (userConfirmation){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl;
                     }
                     else {cout << "Entry not deleted." << endl;}
                 }}
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
         }
         // Searching by exact year
         void deleteByYear (int year){
@@ -157,11 +163,13 @@ class database {
             for (single_record manga : mangaList){
                 if (manga.getYear() == year){searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
             // Display all matched entries and ask user for which one they want to delete
             for (int i = 0; i < searchResults.size(); i++){
                 displayInformation(i, searchResults.at(i));
             }
-
             deleteConfirmationYear(searchResults);
         }
         // Searching by year range
@@ -172,6 +180,9 @@ class database {
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);}
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
             deleteConfirmationYear(searchResults);
         }
 
@@ -189,9 +200,15 @@ class database {
         }
         void deleteConfirmationYear (vector<single_record> searchResults){
             cout << "Enter the entry # of the one you want to delete: ";
-            int userInput;
-            cin >> userInput;
-            userInput--; // Account for index display, decrement by 1 for proper index
+            string userStr;
+            cin >> userStr;
+            while (!realNum (userStr, searchResults.size())){
+                cout << "The entry # inputted is invalid please try again.";
+                cin >> userStr;
+            }
+            
+            // Account for index display, decrement by 1 for proper index
+            int userInput = stoi (userStr) - 1;
             bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
             if (userConfirmation == true){
                 // Loop through the entries, find matching name of user's input then delete
@@ -204,7 +221,15 @@ class database {
             else {
                 cout << "Entry has not been deleted." << endl;
             }
+        }
 
+        bool realNum (string userInput, int end){
+            for (int pos = 0; pos < userInput.length(); pos++){
+                if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
+                    return false;}}
+            if (stoi (userInput) > end || stoi(userInput) < 1){return false;}
+
+            return true;
         }
 
 /* -------------- Listing records in multiple different orders -------------- */
@@ -245,16 +270,25 @@ class database {
 		        for (int check = start + 1; check < numericalList.size(); check++){
 			        if (numericalList.at(check).getYear() < numericalList.at(min).getYear()){
                         min = check;}}
-		            single_record temp = numericalList.at(min);
-		            numericalList.at(min) = numericalList.at(start);
+
+		        single_record temp = numericalList.at(min);
+		        numericalList.at(min) = numericalList.at(start);
 		        numericalList.at(start) = temp;}
-	        return mangaList;   
+	        return numericalList;   
         }
 
         vector<single_record> listNumericalReverse(){
-            vector <single_record> numericalList = listNumerical();
-            reverse (numericalList.begin(), numericalList.end());
-            return numericalList;
+            vector <single_record> numericalList = mangaList;
+            for (int start = 0; start < numericalList.size()-1; start++){
+		        int max = start;
+		        for (int check = start + 1; check < numericalList.size(); check++){
+			        if (numericalList.at(check).getYear() > numericalList.at(max).getYear()){
+                        max = check;}}
+
+		        single_record temp = numericalList.at(max);
+		        numericalList.at(max) = numericalList.at(start);
+		        numericalList.at(start) = temp;}
+	        return numericalList;   
         }
 
         // Getters
