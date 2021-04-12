@@ -52,12 +52,14 @@ class menu{
                             isReleasing = false;
                             break;}}
 
-//TODO BUFF THIS UP
                     cout << "Enter the manga year of release\n";
-                    int year;
+                    string year;
                     cin >> year;
+                    while (!realNum (year)){
+                        cout << "That is not a valid year, please try again. \n";
+                        cin >> year;}
 
-                    single_record newRecord (name, authors, genres, isReleasing, year);
+                    single_record newRecord (name, authors, genres, isReleasing, stoi(year));
                     info->add_entry (newRecord);
 
                     cout << "You have successfully entered a new entry.\n";
@@ -97,18 +99,27 @@ class menu{
                         
                         if (userResponse == "s"){
                             cout << "What year are you looking for? ";
-                            int year;
+                            string year;
                             cin >> year;
-                            info->searchByYear(year);}
+                            while (!realNum (year)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> year;}
+                            info->searchByYear(stoi(year));}
                         
                         else{
-                            int startYear;
-                            int endYear;
+                            string startYear;
+                            string endYear;
                             cout << "Enter the starting year: ";
                             cin >> startYear;
+                            while (!realNum (startYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> startYear;}
                             cout << "Enter the ending year: ";
                             cin >> endYear;
-                            info -> searchByYear(startYear, endYear);}
+                            while (!realNum (endYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> endYear;}
+                            info -> searchByYear(stoi(startYear), stoi(endYear));}
                     }
                 }
                 //delete a manga by its name or year of release in the database
@@ -146,18 +157,27 @@ class menu{
                         
                         if (userResponse == "s"){
                             cout << "What year are you deleting? ";
-                            int year;
+                            string year;
                             cin >> year;
-                            info->deleteByYear(year);}
+                            while (!realNum (year)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> year;}
+                            info->deleteByYear(stoi(year));}
                         
                         else{
-                            int startYear;
-                            int endYear;
+                            string startYear;
+                            string endYear;
                             cout << "Enter the starting year: ";
                             cin >> startYear;
+                            while (!realNum (startYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> startYear;}
                             cout << "Enter the ending year: ";
                             cin >> endYear;
-                            info -> deleteByYear(startYear, endYear);}
+                            while (!realNum (endYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> endYear;}
+                            info -> deleteByYear(stoi(startYear), stoi(endYear));}
                     }
                 }
                 //list the database by alphatical order or numerical order
@@ -212,6 +232,15 @@ class menu{
                 //if the case where the user does not respond correctly
                 else{cout << "Sorry, your response is invalid. Please try again.\n";}
             }
+        }
+
+        //ensures that user input is actually a number
+        bool realNum (string userInput){
+            for (int pos = 0; pos < userInput.length(); pos++){
+                if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
+                    return false;}
+            }
+            return true;
         }
 
         //prints the available choices in menu
