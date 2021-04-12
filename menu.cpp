@@ -190,7 +190,7 @@ class menu{
                 else if (response == "q"){
                     cout << "Have a great day!!\n";
                     //creates a text file of the database
-                    ofstream dataFile("filename.txt");
+                    ofstream dataFile("database.txt");
                     //adds elements to the file
                     string returnStr = "";
                     vector <single_record> file = info->getMangaList();
