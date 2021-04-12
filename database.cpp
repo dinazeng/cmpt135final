@@ -198,9 +198,15 @@ class database {
         }
         void deleteConfirmationYear (vector<single_record> searchResults){
             cout << "Enter the entry # of the one you want to delete: ";
-            int userInput;
-            cin >> userInput;
-            userInput--; // Account for index display, decrement by 1 for proper index
+            string userStr;
+            cin >> userStr;
+            while (!realNum (userStr, searchResults.size())){
+                cout << "The entry # inputted is invalid please try again.";
+                cin >> userStr;
+            }
+            
+            // Account for index display, decrement by 1 for proper index
+            int userInput = stoi (userStr) - 1;
             bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
             if (userConfirmation == true){
                 // Loop through the entries, find matching name of user's input then delete
@@ -213,7 +219,15 @@ class database {
             else {
                 cout << "Entry has not been deleted." << endl;
             }
+        }
 
+        bool realNum (string userInput, int end){
+            for (int pos = 0; pos < userInput.length(); pos++){
+                if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
+                    return false;}}
+            if (stoi (userInput) > end || stoi(userInput) < 1){return false;}
+
+            return true;
         }
 
 /* -------------- Listing records in multiple different orders -------------- */
