@@ -101,6 +101,8 @@ class database {
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 if (mangaList.at(i).getName().find(name) != 1){return mangaList.at(i);}}
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+            return;
         }
         // Searching by exact year
         vector<single_record> searchByYear (int year){
