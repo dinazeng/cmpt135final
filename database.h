@@ -9,8 +9,8 @@ using namespace std;
 
 class database {
     public:
-        // Default constructor
-        database(){}
+        // constructor
+        database(string input){}
 
         // Reads in each entry in database.txt
         void readFile (string input);
@@ -31,6 +31,8 @@ class database {
         // Searching by year range
         void deleteByYear (int yearStart, int yearEnd);
 
+        bool realNum (string userInput, int end);
+        
         // Ask for confirmation on deleting record
         bool deleteConfirmation(single_record manga);
         void deleteConfirmationYear (vector<single_record> searchResults);

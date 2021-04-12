@@ -1,4 +1,5 @@
 //menu class
+#include "database.h"
 #include <iostream>
 using namespace std;
 
@@ -16,9 +17,15 @@ class menu{
         //changes all characters in a string to lower case
         string toLowerStr (string str);
 
+        //prints all elements in a vector
+        void printDatabase(vector <single_record> mangaList);
+
+        //adds an entry
+        void addEntry();
+        
         ~menu();
         
     private:
         string response;
-        database *info;
+        database *info = new database("database.txt");
 };
