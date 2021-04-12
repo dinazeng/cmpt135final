@@ -418,17 +418,17 @@ int main(){
     // Testing deleting by year
     mangaDatabase.deleteByYear(2020);
     // Testing deleting by year range
-    mangaDatabase.deleteByYear(2014, 2018); */
+    mangaDatabase.deleteByYear(2014, 2018);
 
     // Testing listing alphabetically
-    //vector<single_record> listingAlphabetical = mangaDatabase.listAlphabetical();
+    vector<single_record> listingAlphabetical = mangaDatabase.listAlphabetical();
     // Testing listing reverse alphabetically
-    //vector<single_record> listingReverseAlphabetical = mangaDatabase.listAlphabeticalReverse();
+    vector<single_record> listingReverseAlphabetical = mangaDatabase.listAlphabeticalReverse();
 
     // Testing listing numerically
     vector<single_record> listingNumerically = mangaDatabase.listNumerical();
     // Testing listing reverse alphabetically
-    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse();
+    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse(); */
 
 
 
