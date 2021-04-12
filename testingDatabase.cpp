@@ -85,12 +85,12 @@ class database {
                 if (inFile.fail()){break;}
 
                 // Getting title
-                manga.set_name (entry.substr(0, entry.find(":")));
-                entry = entry.substr(entry.find(":") + 1); // Get rid of trailing :
+                manga.set_name (entry.substr(0, entry.find("|")));
+                entry = entry.substr(entry.find("|") + 1); // Get rid of trailing |
 
                 // Getting Genres
-                string mangaGenres = entry.substr(0, entry.find(":"));
-                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}:
+                string mangaGenres = entry.substr(0, entry.find("|"));
+                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}|
                 while (true){
                     string mangaGenre;
                     if (mangaGenres.find(",") != -1){ // There are remaining genres
@@ -101,10 +101,10 @@ class database {
                         manga.add_genre(mangaGenres);
                         break;} 
                 }
-                entry = entry.substr(entry.find(":") + 1);
+                entry = entry.substr(entry.find("|") + 1);
                 
                 // Getting authors
-                string mangaAuthors = entry.substr(0, entry.find(":"));
+                string mangaAuthors = entry.substr(0, entry.find("|"));
                 mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
                 while (true){
                     string mangaAuthor;
@@ -116,11 +116,11 @@ class database {
                         manga.add_author(mangaAuthors);
                         break;} 
                 }
-                entry = entry.substr(entry.find(":") + 1);
+                entry = entry.substr(entry.find("|") + 1);
 
                 // Getting Status of releasing or completed
-                if (entry.substr(0, entry.find(":")) == "releasing"){manga.set_status(true);}
-                entry = entry.substr(entry.find(":") + 1);
+                if (entry.substr(0, entry.find("|")) == "releasing"){manga.set_status(true);}
+                entry = entry.substr(entry.find("|") + 1);
 
                 // Getting Release Date
                 manga.set_year (stoi(entry));
@@ -358,21 +358,20 @@ class database {
         vector<single_record> mangaList = {};
 };
 
-
-/* int main(){
+int main(){
     cout << "The beginning of the end." << endl << endl;
 
     database mangaDatabase;
-    vector<single_record> mangaList = mangaDatabase.readFile("database.txt");
+    mangaDatabase.readFile("database.txt");
 
-    // Testing for displayInformation
+/*     // Testing for displayInformation
     for (int i = 0; i < mangaList.size(); i++){
         mangaDatabase.displayInformation(i, mangaList.at(i));
         cout << endl;
     }
 
     // Testing for deleteConfirmation by name
-    mangaDatabase.deleteByName("Solo Leveling");
+    mangaDatabase.deleteByName("Solo Leveling"); */
 
     cout << "End of testing." << endl;
-} */
+}
