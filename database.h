@@ -1,4 +1,3 @@
-
 #include "cmpt_error.h"
 #include "record.h"
 #include <iostream>
