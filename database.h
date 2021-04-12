@@ -1,4 +1,3 @@
-
 #include "cmpt_error.h"
 #include "record.h"
 #include <iostream>
@@ -35,6 +34,13 @@ class database {
         // Ask for confirmation on deleting record
         bool deleteConfirmation(single_record manga);
         void deleteConfirmationYear (vector<single_record> searchResults);
+
+        vector<single_record> listAlphabetical();       
+        vector<single_record> listAlphabeticalReverse();
+
+        vector<single_record> listNumerical();
+        vector<single_record> listNumericalReverse();
+
 
         // Getters
         vector<single_record> getMangaList() const;
