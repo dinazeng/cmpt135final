@@ -21,7 +21,8 @@ just to type "make" in the shell!)
 Limitations
 -----------
 
-(if you didn't implement all requested features, list which ones are missing)
+-when user is adding a new entry, entering "exit" at anytime will stop the program
+  -> if anything is called exit this will become a bug
 
 
 Known Bugs
