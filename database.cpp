@@ -11,7 +11,6 @@ using namespace std;
 
 class database {
     public:
-
         // Default constructor
         database(string input){ readFile(input); }
 
@@ -24,17 +23,19 @@ class database {
                 // Asks user if they meant something else. 
                 //Yes = rerun function with correct name
                 //No = quit program
-                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: ";
-                char userAnswer;
+                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: "; ///FIX THIS
+                string userAnswer;
                 cin >> userAnswer;
-                if (tolower(userAnswer) == 'n'){
+                userAnswer = tolower(userAnswer[0]);
+                    while (userAnswer != "y" && userAnswer != "n"){
+                        cout << "Your response is invalid, please try again: ";
+                        cin >> userAnswer;}
+                if (tolower(userAnswer[0]) == 'n'){
                     cmpt::error("\nThe file inputted does not exist. Please try again.");}
-                else {
-                    cout << "What is the name of the file?";
-                    string correctInput;
-                    cin >> correctInput;
-                    fstream inFile(correctInput);
-                }
+                cout << "What is the name of the file?";
+                string correctInput;
+                cin >> correctInput;
+                fstream inFile(correctInput);
             }
 
             // Read in each input (line) from the file
@@ -158,8 +159,7 @@ class database {
             // The case where user enters in exact name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){
-                    bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl << endl;
                         return;
@@ -182,8 +182,7 @@ class database {
                     lowercaseUserInput.push_back(tolower(character));
                 }
                 if (lowercaseName.find(lowercaseUserInput) != -1){
-                    bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl << endl;
                         return;
@@ -262,8 +261,7 @@ class database {
             
             // Account for index display, decrement by 1 for proper index
             int userInput = stoi (userStr) - 1;
-            bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
-            if (userConfirmation == true){
+            if (deleteConfirmation (userInput, searchResults.at(userInput))){
                 // Loop through the entries, find matching name of user's input then delete
                 for (int i = 0; i < mangaList.size(); i++){
                     if (mangaList.at(i).getName() == searchResults.at(userInput).getName()){
@@ -367,12 +365,8 @@ class database {
             cout << authors.at(authors.size() - 1) << "." << endl;
 
             cout << "Status: ";
-            if (manga.getStatus() == true){
-                cout << "Releasing." << endl;
-            }
-            else {
-                cout << "Completed." << endl;
-            }
+            if (manga.getStatus()){cout << "Releasing." << endl;}
+            else {cout << "Completed." << endl;}
 
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }
