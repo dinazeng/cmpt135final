@@ -2,7 +2,7 @@
 #include "cmpt_error.h"
 #include "database.h"
 #include "record.h"
-#include "menu.h"
+//#include "menu.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -52,12 +52,14 @@ class menu{
                             isReleasing = false;
                             break;}}
 
-//TODO BUFF THIS UP
                     cout << "Enter the manga year of release\n";
-                    int year;
+                    string year;
                     cin >> year;
+                    while (!realNum (year)){
+                        cout << "That is not a valid year, please try again. \n";
+                        cin >> year;}
 
-                    single_record newRecord (name, authors, genres, isReleasing, year);
+                    single_record newRecord (name, authors, genres, isReleasing, stoi(year));
                     info->add_entry (newRecord);
 
                     cout << "You have successfully entered a new entry.\n";
@@ -97,18 +99,27 @@ class menu{
                         
                         if (userResponse == "s"){
                             cout << "What year are you looking for? ";
-                            int year;
+                            string year;
                             cin >> year;
-                            info->searchByYear(year);}
+                            while (!realNum (year)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> year;}
+                            info->searchByYear(stoi(year));}
                         
                         else{
-                            int startYear;
-                            int endYear;
+                            string startYear;
+                            string endYear;
                             cout << "Enter the starting year: ";
                             cin >> startYear;
+                            while (!realNum (startYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> startYear;}
                             cout << "Enter the ending year: ";
                             cin >> endYear;
-                            info -> searchByYear(startYear, endYear);}
+                            while (!realNum (endYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> endYear;}
+                            info -> searchByYear(stoi(startYear), stoi(endYear));}
                     }
                 }
                 //delete a manga by its name or year of release in the database
@@ -146,18 +157,27 @@ class menu{
                         
                         if (userResponse == "s"){
                             cout << "What year are you deleting? ";
-                            int year;
+                            string year;
                             cin >> year;
-                            info->deleteByYear(year);}
+                            while (!realNum (year)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> year;}
+                            info->deleteByYear(stoi(year));}
                         
                         else{
-                            int startYear;
-                            int endYear;
+                            string startYear;
+                            string endYear;
                             cout << "Enter the starting year: ";
                             cin >> startYear;
+                            while (!realNum (startYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> startYear;}
                             cout << "Enter the ending year: ";
                             cin >> endYear;
-                            info -> deleteByYear(startYear, endYear);}
+                            while (!realNum (endYear)){
+                                cout << "That is not a valid year, please try again. \n";
+                                cin >> endYear;}
+                            info -> deleteByYear(stoi(startYear), stoi(endYear));}
                     }
                 }
                 //list the database by alphatical order or numerical order
@@ -187,8 +207,8 @@ class menu{
                             cin >> userResponse;
                             userResponse = toLowerStr(userResponse);}
                         
-                        if (userResponse == "a"){info->listAlphabetical();}
-                        else {info->listAlphabeticalReverse();}
+                        if (userResponse == "a"){printDatabase(info->listAlphabetical());}
+                        else {printDatabase(info->listAlphabeticalReverse());}
                     }
 
                     else if (userResponse == "y"){
@@ -201,17 +221,26 @@ class menu{
                             cin >> userResponse;
                             userResponse = toLowerStr(userResponse);}
                         
-                        if (userResponse == "a"){info->listNumerical();}
-                        else {info->listNumericalReverse();}
+                      if (userResponse == "a"){printDatabase(info->listNumerical());}
+                        else {printDatabase(info->listNumericalReverse());}
                     }
                 } 
                 //stops the program
                 else if (response == "q"){
-                    delete info;
                     cout << "Have a great day!!\n";}
                 //if the case where the user does not respond correctly
                 else{cout << "Sorry, your response is invalid. Please try again.\n";}
             }
+        }
+
+        //ensures that user input is actually a number
+        bool realNum (string userInput){
+            for (int pos = 0; pos < userInput.length(); pos++){
+                if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
+                    return false;}}
+            if (stoi (userInput) > 2021 || stoi(userInput) < 1952){return false;}
+
+            return true;
         }
 
         //prints the available choices in menu
@@ -235,7 +264,35 @@ class menu{
             return returnStr;
         }
 
+        void printDatabase(vector <single_record> mangaList){
+            for (int pos = 0; pos < mangaList.size(); pos ++){
+                cout << "Entry #" << pos + 1 << endl;
+                cout << "=========================================" << endl;
+                cout << "Name: " << mangaList.at(pos).getName() << "." << endl;
+
+                cout << "Genres: ";
+                vector<string> genres = mangaList.at(pos).getGenres();
+                for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
+                cout << genres.at(genres.size() - 1) << "." << endl;
+
+                cout << "Authors: ";
+                vector<string> authors = mangaList.at(pos).getAuthors();
+                for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
+                cout << authors.at(authors.size() - 1) << "." << endl;
+
+                cout << "Status: ";
+                if (mangaList.at(pos).getStatus() == true){cout << "Releasing." << endl;}
+                else {cout << "Completed." << endl;}
+
+                cout << "Year of release: " << mangaList.at(pos).getYear() << "." << endl;
+            }
+        }
+
+        ~menu(){
+            delete info;
+        }
+    
     private:
         string response = "";
-        database *info = new database();
+        database *info;// = new database("database.txt");
 };
