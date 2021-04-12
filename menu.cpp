@@ -227,7 +227,6 @@ class menu{
                 } 
                 //stops the program
                 else if (response == "q"){
-                    delete info;
                     cout << "Have a great day!!\n";}
                 //if the case where the user does not respond correctly
                 else{cout << "Sorry, your response is invalid. Please try again.\n";}
@@ -238,8 +237,9 @@ class menu{
         bool realNum (string userInput){
             for (int pos = 0; pos < userInput.length(); pos++){
                 if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
-                    return false;}
-            }
+                    return false;}}
+            if (stoi (userInput) > 2021 || stoi(userInput) < 1952){return false;}
+
             return true;
         }
 
@@ -264,6 +264,10 @@ class menu{
             return returnStr;
         }
 
+        ~menu(){
+            delete info;
+        }
+    
     private:
         string response = "";
         database *info = new database();
