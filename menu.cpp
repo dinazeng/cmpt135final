@@ -2,7 +2,7 @@
 #include "cmpt_error.h"
 #include "database.h"
 #include "record.h"
-#include "menu.h"
+//#include "menu.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -207,8 +207,8 @@ class menu{
                             cin >> userResponse;
                             userResponse = toLowerStr(userResponse);}
                         
-                        if (userResponse == "a"){info->listAlphabetical();}
-                        else {info->listAlphabeticalReverse();}
+                        if (userResponse == "a"){printDatabase(info->listAlphabetical());}
+                        else {printDatabase(info->listAlphabeticalReverse());}
                     }
 
                     else if (userResponse == "y"){
@@ -221,8 +221,8 @@ class menu{
                             cin >> userResponse;
                             userResponse = toLowerStr(userResponse);}
                         
-                        if (userResponse == "a"){info->listNumerical();}
-                        else {info->listNumericalReverse();}
+                      if (userResponse == "a"){printDatabase(info->listNumerical());}
+                        else {printDatabase(info->listNumericalReverse());}
                     }
                 } 
                 //stops the program
@@ -264,11 +264,35 @@ class menu{
             return returnStr;
         }
 
+        void printDatabase(vector <single_record> mangaList){
+            for (int pos = 0; pos < mangaList.size(); pos ++){
+                cout << "Entry #" << pos + 1 << endl;
+                cout << "=========================================" << endl;
+                cout << "Name: " << mangaList.at(pos).getName() << "." << endl;
+
+                cout << "Genres: ";
+                vector<string> genres = mangaList.at(pos).getGenres();
+                for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
+                cout << genres.at(genres.size() - 1) << "." << endl;
+
+                cout << "Authors: ";
+                vector<string> authors = mangaList.at(pos).getAuthors();
+                for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
+                cout << authors.at(authors.size() - 1) << "." << endl;
+
+                cout << "Status: ";
+                if (mangaList.at(pos).getStatus() == true){cout << "Releasing." << endl;}
+                else {cout << "Completed." << endl;}
+
+                cout << "Year of release: " << mangaList.at(pos).getYear() << "." << endl;
+            }
+        }
+
         ~menu(){
             delete info;
         }
     
     private:
         string response = "";
-        database *info = new database();
+        database *info;// = new database("database.txt");
 };
