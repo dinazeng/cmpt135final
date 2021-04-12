@@ -288,6 +288,7 @@ class menu{
             }
         }
 
+
         ~menu(){
             delete info;
         }
