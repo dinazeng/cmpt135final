@@ -8,10 +8,12 @@
 #include <fstream>
 using namespace std;
 
+
 class database {
     public:
+
         // Default constructor
-        database(){}
+        database(string input){ readFile(input); }
 
         // Reads in each entry in database.txt
         void readFile (string input){
@@ -44,42 +46,47 @@ class database {
                 if (inFile.fail()){break;}
 
                 // Getting title
-                manga.set_name (entry.substr(0, entry.find(":")));
-                entry = entry.substr(entry.find(":") + 1); // Get rid of trailing :
+                manga.set_name (entry.substr(0, entry.find("|")));
+                entry = entry.substr(entry.find("|") + 1); // Get rid of trailing |
 
                 // Getting Genres
-                string mangaGenres = entry.substr(0, entry.find(":"));
-                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}:
+                // Get rid of starting and trailing {}|
+                string mangaGenres = entry.substr(0, entry.find("|"));
+                // Get rid of starting and trailing {}|
+                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); 
                 while (true){
                     string mangaGenre;
                     if (mangaGenres.find(",") != -1){ // There are remaining genres
                         mangaGenre = mangaGenres.substr(0, mangaGenres.find(","));
-                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); // Get rid of comma and space
+                        // Get rid of comma and space
+                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); 
                         manga.add_genre(mangaGenre);}
                     else { // Last genre in the list
                         manga.add_genre(mangaGenres);
                         break;} 
                 }
-                entry = entry.substr(entry.find(":") + 1);
+                entry = entry.substr(entry.find("|") + 1);
                 
                 // Getting authors
-                string mangaAuthors = entry.substr(0, entry.find(":"));
-                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
+                string mangaAuthors = entry.substr(0, entry.find("|"));
+                // Get rid of starting and trailing {}:
+                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); 
                 while (true){
                     string mangaAuthor;
                     if (mangaAuthors.find(",") != -1){ // There are remaining genres
                         mangaAuthor = mangaAuthors.substr(0, mangaAuthors.find(","));
-                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); // Get rid of comma and space
+                        // Get rid of comma and space
+                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); 
                         manga.add_author(mangaAuthor);}
                     else { // Last genre in the list
                         manga.add_author(mangaAuthors);
                         break;} 
                 }
-                entry = entry.substr(entry.find(":") + 1);
+                entry = entry.substr(entry.find("|") + 1);
 
                 // Getting Status of releasing or completed
-                if (entry.substr(0, entry.find(":")) == "releasing"){manga.set_status(true);}
-                entry = entry.substr(entry.find(":") + 1);
+                if (entry.substr(0, entry.find("|")) == "releasing"){manga.set_status(true);}
+                entry = entry.substr(entry.find("|") + 1);
 
                 // Getting Release Date
                 manga.set_year (stoi(entry));
@@ -100,9 +107,23 @@ class database {
                 if (name == mangaList.at(i).getName()){return mangaList.at(i);}}
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
-                if (mangaList.at(i).getName().find(name) != 1){return mangaList.at(i);}}
+                // Turns all letters of manga's name lower case to remove case sensitivity
+                string lowercaseName;
+                for (char character : mangaList.at(i).getName()){
+                    lowercaseName.push_back(tolower(character));
+                }
+                // Turns all letters of user's input lower case to remove case sensitivity
+                string lowercaseUserInput;
+                for (char character : name){
+                    lowercaseUserInput.push_back(tolower(character));
+                }
+                if (lowercaseName.find(lowercaseUserInput) != -1){
+                    return mangaList.at(i);
+                }
+            }
             cout << "The manga that you are looking for cannot be found. Please try again.\n";
-            return;
+            single_record noRecord;
+            return noRecord;
         }
         // Searching by exact year
         vector<single_record> searchByYear (int year){
@@ -110,7 +131,8 @@ class database {
             vector<single_record> searchResults;
             for (single_record manga : mangaList){
                 if (manga.getYear() == year){
-                    searchResults.push_back(manga);}
+                    searchResults.push_back(manga);
+                }
             }
             if (searchResults.size() == 0){
                 cout << "The manga that you are looking for cannot be found. Please try again.\n";}
@@ -122,7 +144,8 @@ class database {
             vector<single_record> searchResults;
             for (single_record manga: mangaList){
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
-                    searchResults.push_back(manga);}
+                    searchResults.push_back(manga);
+                }
             }
             if (searchResults.size() == 0){
                 cout << "The manga that you are looking for cannot be found. Please try again.\n";}
@@ -136,23 +159,39 @@ class database {
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation){
+                    if (userConfirmation == true){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl;
-                        return;}
+                        cout << "Entry deleted." << endl << endl;
+                        return;
+                    }
                     else {
-                        cout << "Entry not deleted." << endl;
-                        return;}
+                        cout << "Entry not deleted." << endl << endl;
+                        return;
+                    }
                 }}
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
-                if (mangaList.at(i).getName().find(name) != 1){
+                // Turns all letters of manga's name lower case to remove case sensitivity
+                string lowercaseName;
+                for (char character : mangaList.at(i).getName()){
+                    lowercaseName.push_back(tolower(character));
+                }
+                // Turns all letters of user's input lower case to remove case sensitivity
+                string lowercaseUserInput;
+                for (char character : name){
+                    lowercaseUserInput.push_back(tolower(character));
+                }
+                if (lowercaseName.find(lowercaseUserInput) != -1){
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation){
+                    if (userConfirmation == true){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl;
+                        cout << "Entry deleted." << endl << endl;
+                        return;
                     }
-                    else {cout << "Entry not deleted." << endl;}
+                    else {
+                        cout << "Entry not deleted." << endl << endl;
+                        return;
+                    }
                 }}
             cout << "The manga that you are looking for cannot be found. Please try again.\n";
         }
@@ -161,15 +200,18 @@ class database {
             // For each manga with matching year, append to searchResults and return at end
             vector<single_record> searchResults;
             for (single_record manga : mangaList){
-                if (manga.getYear() == year){searchResults.push_back(manga);}
+                if (manga.getYear() == year){
+                    searchResults.push_back(manga);
+                }
             }
-            if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";
-                return;}
             // Display all matched entries and ask user for which one they want to delete
             for (int i = 0; i < searchResults.size(); i++){
                 displayInformation(i, searchResults.at(i));
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
+
             deleteConfirmationYear(searchResults);
         }
         // Searching by year range
@@ -178,27 +220,38 @@ class database {
             vector<single_record> searchResults;
             for (single_record manga: mangaList){
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
-                    searchResults.push_back(manga);}
+                    searchResults.push_back(manga);
+                }
             }
             if (searchResults.size() == 0){
                 cout << "The manga that you are looking for cannot be found. Please try again.\n";
                 return;}
+            for (int i = 0; i < searchResults.size(); i++){
+                cout << endl;
+                displayInformation(i, searchResults.at(i));
+            }
             deleteConfirmationYear(searchResults);
         }
 
         // Ask for confirmation on deleting record
         bool deleteConfirmation (int index, single_record manga){
-            bool userConfirmation = false;
+            //bool userConfirmation = false;
             // Use the parameter manga to display manga later once we have a function to do so
             cout << "Are you sure you would like to delete: " << endl; 
             displayInformation(index, manga);
             cout << endl << "(Y)es or (N)o: ";
-            char userInput; cin >> userInput;
-            userInput = static_cast<char>(tolower(userInput)); // Turns any input to lowercase
-            if (userInput == 'y'){return true;}
+            string userInput; 
+            cin >> userInput;
+            userInput[0] = tolower(userInput[0]); // Turns any input to lowercase
+            while ((userInput != "y" && userInput != "n")|| userInput.length() != 1){
+                cout << "Please enter a valid response. (Y)es or (N)o: ";
+                cin >> userInput;
+            }
+            if (userInput == "y"){return true;}
             return false;
         }
         void deleteConfirmationYear (vector<single_record> searchResults){
+            cout << endl;
             cout << "Enter the entry # of the one you want to delete: ";
             string userStr;
             cin >> userStr;
@@ -214,15 +267,17 @@ class database {
                 // Loop through the entries, find matching name of user's input then delete
                 for (int i = 0; i < mangaList.size(); i++){
                     if (mangaList.at(i).getName() == searchResults.at(userInput).getName()){
-                        mangaList.erase(mangaList.begin() + i);}
+                        mangaList.erase(mangaList.begin() + i);
+                    }
                 }
                 cout << "Entry has been deleted." << endl;
             }
             else {
                 cout << "Entry has not been deleted." << endl;
             }
-        }
 
+        }
+        
         bool realNum (string userInput, int end){
             for (int pos = 0; pos < userInput.length(); pos++){
                 if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
@@ -242,13 +297,15 @@ class database {
             // Iteration for beginning index in unsorted section of alphabeticalList
             for (int i = 0; i < alphabeticalList.size() - 1; i++){
                 // Finding the minimum element in the current unsorted alphabeticalList
-                // Set index of the 'minimum element' default to the first index of unsorted alphabeticalList
+                // Set index of the 'minimum element' 
+                //default to the first index of unsorted alphabeticalList
                 minIndex = i;
                 // Iterate through the unsorted section of the vector
                 for (int j = i + 1; j < alphabeticalList.size(); j++){
                     // Compare the first letters of the titles
-                    if (alphabeticalList.at(j).getName().at(0) 
-                        < alphabeticalList.at(minIndex).getName().at(0)){minIndex = j;}
+                    if (alphabeticalList.at(j).getName()<alphabeticalList.at(minIndex).getName()){
+                        minIndex = j;
+                    }
                 }
                 // Swap element at the minIndex with beginning of unsorted vector
                 swap(alphabeticalList.at(minIndex), alphabeticalList.at(i));
@@ -269,30 +326,22 @@ class database {
 		        int min = start;
 		        for (int check = start + 1; check < numericalList.size(); check++){
 			        if (numericalList.at(check).getYear() < numericalList.at(min).getYear()){
-                        min = check;}}
-
-		        single_record temp = numericalList.at(min);
-		        numericalList.at(min) = numericalList.at(start);
-		        numericalList.at(start) = temp;}
+                        min = check;
+                    }
+                }
+                swap(numericalList.at(min), numericalList.at(start));
+            }
 	        return numericalList;   
         }
 
         vector<single_record> listNumericalReverse(){
-            vector <single_record> numericalList = mangaList;
-            for (int start = 0; start < numericalList.size()-1; start++){
-		        int max = start;
-		        for (int check = start + 1; check < numericalList.size(); check++){
-			        if (numericalList.at(check).getYear() > numericalList.at(max).getYear()){
-                        max = check;}}
-
-		        single_record temp = numericalList.at(max);
-		        numericalList.at(max) = numericalList.at(start);
-		        numericalList.at(start) = temp;}
-	        return numericalList;   
+            vector <single_record> numericalList = listNumerical();
+            reverse (numericalList.begin(), numericalList.end());
+            return numericalList;
         }
 
         // Getters
-        vector<single_record> getMangaList() const;
+        vector<single_record> getMangaList() const{ return mangaList; };
 
         //Modify the vector
         void add_entry (single_record newEntry){mangaList.push_back(newEntry);}
@@ -305,17 +354,25 @@ class database {
 
             cout << "Genres: ";
             vector<string> genres = manga.getGenres();
-            for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
+            for (int i = 0; i < genres.size() - 1; i++){
+                cout << genres.at(i) << ", ";
+            }
             cout << genres.at(genres.size() - 1) << "." << endl;
 
             cout << "Authors: ";
             vector<string> authors = manga.getAuthors();
-            for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
+            for (int i = 0; i < authors.size() - 1; i++){
+                cout << authors.at(i) << ", ";
+            }
             cout << authors.at(authors.size() - 1) << "." << endl;
 
             cout << "Status: ";
-            if (manga.getStatus() == true){cout << "Releasing." << endl;}
-            else {cout << "Completed." << endl;}
+            if (manga.getStatus() == true){
+                cout << "Releasing." << endl;
+            }
+            else {
+                cout << "Completed." << endl;
+            }
 
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }

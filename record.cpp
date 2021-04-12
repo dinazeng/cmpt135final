@@ -1,6 +1,5 @@
-//record.h class
+//record.cpp class
 
-#include "cmpt_error.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -32,6 +31,26 @@ class single_record{
         vector<string> getGenres() const { return genres; }
         bool getStatus() const { return isReleasing; }
         int getYear() const { return year; }
+
+        //print everything
+        void printEntry(){
+            cout << "=========================================" << endl;
+            cout << "Name: " << name << "." << endl;
+
+            cout << "Genres: ";
+            for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
+            cout << genres.at(genres.size() - 1) << "." << endl;
+
+            cout << "Authors: ";
+            for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
+            cout << authors.at(authors.size() - 1) << "." << endl;
+
+            cout << "Status: ";
+            if (isReleasing){cout << "Releasing." << endl;}
+            else {cout << "Completed." << endl;}
+
+            cout << "Year of release: " << year << "." << endl;
+        }
 
         //add to vector functions
         void add_genre(string newGenre){genres.push_back(newGenre);}

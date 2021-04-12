@@ -619,7 +619,32 @@ class menu{
                 } 
                 //stops the program
                 else if (response == "q"){
-                    cout << "Have a great day!!\n";}
+                   cout << "Have a great day!!\n";
+                    //creates a text file of the database
+                    ofstream dataFile("filename.txt");
+                    //adds elements to the file
+                    string returnStr = "";
+                    vector <single_record> file = info->getMangaList();
+                    for (int pos = 0; pos < file.size(); pos++){
+                        single_record record = file.at(pos);
+                        //add name
+                        returnStr = record.getName() + ",{";
+                        //add genres
+                        for (int gen = 0; gen < record.getGenres().size() - 1; gen++){
+                            returnStr += record.getGenres().at(gen) + ", ";}
+                        returnStr += record.getGenres().at(record.getGenres().size()-1) + "},{";
+                        //add authors
+                        for (int loc = 0; loc < record.getAuthors().size() - 1; loc++){
+                            returnStr += record.getAuthors().at(loc) + ", ";}
+                        returnStr += record.getAuthors().at(record.getAuthors().size()-1) + "},";
+                        //add status and year
+                        if(record.getStatus()){returnStr += "releasing," + to_string(record.getYear());}
+                        else {returnStr += "completed," + to_string(record.getYear());}
+                        dataFile << returnStr << endl;
+                    }
+
+                    dataFile.close();
+                }
                 //if the case where the user does not respond correctly
                 else{cout << "Sorry, Your response is invalid, please try again: ";}
             }

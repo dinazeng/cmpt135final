@@ -1,6 +1,5 @@
 //record.h class
 
-#include "cmpt_error.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -9,6 +8,8 @@ class single_record{
     public:
         single_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
                       bool mangaStatus, int releaseYear);
+
+        single_record(string mangaName, vector<string> mangaAuthor);
 
         //default constructor
         single_record(){}
@@ -26,6 +27,9 @@ class single_record{
         vector<string> getGenres() const;
         bool getStatus() const;
         int getYear() const;
+
+        //print everything
+        void printEntry();
 
         //add to vector functions
         void add_genre(string newGenre);
