@@ -277,7 +277,6 @@ class database {
             cout << "Authors: ";
             vector<string> authors = manga.getAuthors();
             for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
-
             cout << authors.at(authors.size() - 1) << "." << endl;
 
             cout << "Status: ";
