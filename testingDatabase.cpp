@@ -157,6 +157,9 @@ class database {
                     return mangaList.at(i);
                 }
             }
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+            single_record noRecord;
+            return noRecord;
         }
         // Searching by exact year
         vector<single_record> searchByYear (int year){
@@ -167,6 +170,8 @@ class database {
                     searchResults.push_back(manga);
                 }
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
         // Searching by year range
@@ -178,6 +183,8 @@ class database {
                     searchResults.push_back(manga);
                 }
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
             return searchResults;
         }
 
@@ -222,6 +229,7 @@ class database {
                         return;
                     }
                 }}
+            cout << "The manga that you are looking for cannot be found. Please try again.\n";
         }
         // Searching by exact year
         void deleteByYear (int year){
@@ -236,9 +244,11 @@ class database {
             for (int i = 0; i < searchResults.size(); i++){
                 displayInformation(i, searchResults.at(i));
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
 
             deleteConfirmationYear(searchResults);
-
         }
         // Searching by year range
         void deleteByYear (int yearStart, int yearEnd){
@@ -249,11 +259,13 @@ class database {
                     searchResults.push_back(manga);
                 }
             }
+            if (searchResults.size() == 0){
+                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                return;}
             for (int i = 0; i < searchResults.size(); i++){
                 cout << endl;
                 displayInformation(i, searchResults.at(i));
             }
-
             deleteConfirmationYear(searchResults);
         }
 
@@ -277,10 +289,15 @@ class database {
         void deleteConfirmationYear (vector<single_record> searchResults){
             cout << endl;
             cout << "Enter the entry # of the one you want to delete: ";
-            int userInput;
-            cin >> userInput;
-            cout << endl;
-            userInput--; // Account for index display, decrement by 1 for proper index
+            string userStr;
+            cin >> userStr;
+            while (!realNum (userStr, searchResults.size())){
+                cout << "The entry # inputted is invalid please try again.";
+                cin >> userStr;
+            }
+            
+            // Account for index display, decrement by 1 for proper index
+            int userInput = stoi (userStr) - 1;
             bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
             if (userConfirmation == true){
                 // Loop through the entries, find matching name of user's input then delete
@@ -295,6 +312,15 @@ class database {
                 cout << "Entry has not been deleted." << endl;
             }
 
+        }
+        
+         bool realNum (string userInput, int end){
+            for (int pos = 0; pos < userInput.length(); pos++){
+                if (!(userInput[pos] >= '0' && userInput[pos] <= '9')){
+                    return false;}}
+            if (stoi (userInput) > end || stoi(userInput) < 1){return false;}
+
+            return true;
         }
 
 /* -------------- Listing records in multiple different orders -------------- */
@@ -400,7 +426,7 @@ int main(){
     database mangaDatabase("database.txt");
     //mangaDatabase.readFile("database.txt");
 
-    // Testing searching by exact string
+/*     // Testing searching by exact string
     single_record drStone = mangaDatabase.searchByName("Dr. Stone");
     single_record koiToUtatane = mangaDatabase.searchByName("utatane");
     single_record kanojoOkarishimasu = mangaDatabase.searchByName("okarishimasu");
@@ -429,7 +455,38 @@ int main(){
     // Testing listing numerically
     vector<single_record> listingNumerically = mangaDatabase.listNumerical();
     // Testing listing reverse alphabetically
-    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse();
+    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse(); */
+
+/*     // Testing searching by exact string
+    single_record drStone = mangaDatabase.searchByName("bleach");
+    single_record koiToUtatane = mangaDatabase.searchByName("boku no hero academia");
+    single_record kanojoOkarishimasu = mangaDatabase.searchByName("one piece");
+    single_record kanojoMoKanojo = mangaDatabase.searchByName("demon slayer");
+    
+    // Testing searching by year
+    vector<single_record> range2018 = mangaDatabase.searchByYear(2022);
+    // Testing searching by year range
+    vector<single_record> range2010to2015 = mangaDatabase.searchByYear(1050, 2021);
+    
+    // Testing deleting by name 
+    mangaDatabase.deleteByName("bleach");
+    mangaDatabase.deleteByName("boku no hero academia");
+    mangaDatabase.deleteByName("one piece");
+    mangaDatabase.deleteByName("Demon slayer");
+    
+    // Testing deleting by year
+    mangaDatabase.deleteByYear(2022);
+    // Testing deleting by year range
+    mangaDatabase.deleteByYear(1953, 2018);
+    
+    // Testing listing alphabetically
+    vector<single_record> listingAlphabetical = mangaDatabase.listAlphabetical();
+    // Testing listing reverse alphabetically
+    vector<single_record> listingReverseAlphabetical = mangaDatabase.listAlphabeticalReverse();
+    // Testing listing numerically
+    vector<single_record> listingNumerically = mangaDatabase.listNumerical();
+    // Testing listing reverse alphabetically
+    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse(); */
 
     cout << "End of testing." << endl;
 }
