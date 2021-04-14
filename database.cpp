@@ -376,7 +376,7 @@ class database {
         
         // Displaying a manga's information
         void displayInformation(int index, single_record manga){
-            for (int pos = 0; pos < mangaList.size(); pos ++){
+            /*for (int pos = 0; pos < mangaList.size(); pos ++){
                 mvwprintw(win, pos*15 + 1, 1, "Entry #");
                 string str = to_string(pos + 1);
                 mvwprintw(win, pos*15 + 1, 8, str);
@@ -416,6 +416,7 @@ class database {
                 mvwprintw(win, pos*15 + 7, 17, "Year of release: ");
             }
             wrefresh(win);
+            */
         }
 
         // Deconstructor

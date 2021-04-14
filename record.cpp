@@ -35,7 +35,7 @@ class single_record{
 
         //print everything
         void printEntry(){
-            initscr();
+            /*initscr();
             int yMax, xMax;
             getmaxyx(stdscr,yMax, xMax);
 
@@ -80,7 +80,7 @@ class single_record{
             mvwprintw(win, 7, 18, year);
             mvwprintw(win, 7, 22, ".");
             wrefresh(win);
-            endwin();
+            endwin();*/
         }
 
         //add to vector functions

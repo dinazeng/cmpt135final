@@ -294,6 +294,7 @@ class menu{
 
         //prints all elements in a vector
         void printDatabase(vector <single_record> mangaList){
+            /*
             for (int pos = 0; pos < mangaList.size(); pos ++){
                 mvwprintw(win, pos*15 + 1, 1, "Entry #" + to_string(pos+1));
                 mvwprintw(win, pos*15 + 2, 1,"=========================================");
@@ -326,6 +327,7 @@ class menu{
                           + mangaList.at(pos).getYear() + ".");
             }
             wrefresh(win);
+            */
         }
 
         //adds an entry
