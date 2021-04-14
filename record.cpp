@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <ncurses.h>
 using namespace std;
 
 class single_record{
@@ -34,22 +35,52 @@ class single_record{
 
         //print everything
         void printEntry(){
-            cout << "=========================================" << endl;
-            cout << "Name: " << name << "." << endl;
+            initscr();
+            int yMax, xMax;
+            getmaxyx(stdscr,yMax, xMax);
 
-            cout << "Genres: ";
-            for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
-            cout << genres.at(genres.size() - 1) << "." << endl;
+            //create window
+            WINDOW *win = newwin(yMax*0.70, xMax*0.70, yMax, xMax);
+            refresh();
 
-            cout << "Authors: ";
-            for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
-            cout << authors.at(authors.size() - 1) << "." << endl;
+            box(win,0,0);
+            wrefresh(win);
 
-            cout << "Status: ";
-            if (isReleasing){cout << "Releasing." << endl;}
-            else {cout << "Completed." << endl;}
+            mvwprintw(win, 1, 1,"=========================================");
+            mvwprintw(win, 2, 1, "Name: ");
+            mvwprintw(win, 2, 5, name);
+            mvwprintw(win, 2, name.length() + 5, ".");
 
-            cout << "Year of release: " << year << "." << endl;
+            mvwprintw(win, 3, 1, "Genres: ");
+            int rowPos = 9;
+            for (int i = 0; i < genres.size() - 1; i++){
+                mvwprintw(win, 4, rowPos, genres.at(i));
+                mvwprintw(win, 4, rowPos + genres.at(i).length(), ", ");
+                rowPos += genres.at(i).length() + 2;
+            }
+            mvwprintw(win, 4, rowPos, genres.at(genres.size() - 1));
+            mvwprintw(win, 4, rowPos + genres.at(genres.size() - 1).length(), ".");
+
+            mvwprintw(win, 5, 1, "Authors: ");
+            rowPos = 10;
+            for (int i = 0; i < authors.size() - 1; i++){
+                mvwprintw(win, 5, rowPos, authors.at(i));
+                mvwprintw(win, 5, rowPos + authors.at(i).length(), ", ");
+                rowPos += authors.at(i).length() + 2;
+            }
+            mvwprintw(win, 5, rowPos, authors.at(authors.size() - 1));
+            mvwprintw(win, 5, rowPos + authors.at(authors.size() - 1).length(), ".");
+
+            mvwprintw(win,6, 1,"Status: ");
+            if (isReleasing == true){
+                mvwprintw(win,6, 9,"Releasing.");}
+            else {mvwprintw(win,6, 9,"Completed.");}
+
+            mvwprintw(win, 7, 1, "Year of release: ");
+            mvwprintw(win, 7, 18, year);
+            mvwprintw(win, 7, 22, ".");
+            wrefresh(win);
+            endwin();
         }
 
         //add to vector functions

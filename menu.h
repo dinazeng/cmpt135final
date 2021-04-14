@@ -1,6 +1,7 @@
 //menu class
 #include "database.h"
 #include <iostream>
+#include <ncurses.h>
 using namespace std;
 
 class menu{
@@ -26,6 +27,9 @@ class menu{
         ~menu();
         
     private:
-        string response;
-        database *info = new database("database.txt");
+        int response;
+        int xMax, yMax;
+        string print;
+        WINDOW *win;
+        database *info;
 };

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <fstream>
+#include <ncurses.h>
 using namespace std;
 
 class database {
@@ -59,5 +59,7 @@ class database {
 
 
     private:
-        vector<single_record> mangaList = {};
+        vector<single_record> mangaList;
+        int yMax, xMax;
+        WINDOW *win;
 };

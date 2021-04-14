@@ -1,4 +1,6 @@
-  
+
+//class database
+
 #include "cmpt_error.h"
 #include "database.h"
 #include "record.h"
@@ -6,13 +8,20 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <cmath>
+#include <algorithm>
+#include <ncurses.h>
 using namespace std;
 
 
 class database {
     public:
         // Default constructor
-        database(string input){ readFile(input); }
+        database(string input){
+            readFile(input);
+            initscr();
+            getmaxyx(stdscr,yMax, xMax);
+        }
 
         // Reads in each entry in database.txt
         void readFile (string input){
@@ -23,16 +32,18 @@ class database {
                 // Asks user if they meant something else. 
                 //Yes = rerun function with correct name
                 //No = quit program
-                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: "; ///FIX THIS
-                string userAnswer;
-                cin >> userAnswer;
-                userAnswer = tolower(userAnswer[0]);
-                    while (userAnswer != "y" && userAnswer != "n"){
-                        cout << "Your response is invalid, please try again: ";
-                        cin >> userAnswer;}
-                if (tolower(userAnswer[0]) == 'n'){
+                mvwprintw(win, 2, 1, "The file does not exist. Did you mean something else? (Y)es or (N)o: ");
+                wrefresh(win);
+                char userResponse = wgetch(win);
+                while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
+                    mvwprintw(win, 1, 1, "Your response is invalid, please try again: ");
+                    wrefresh(win);
+                    userResponse = wgetch(win);
+                }
+                if (userResponse == 'n'){
                     cmpt::error("\nThe file inputted does not exist. Please try again.");}
-                cout << "What is the name of the file?";
+                mvwprintw(win, 1, 1, "What is the name of the file?");
+                wrefresh(win);
                 string correctInput;
                 cin >> correctInput;
                 fstream inFile(correctInput);
@@ -122,7 +133,8 @@ class database {
                     return mangaList.at(i);
                 }
             }
-            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+            mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+            wrefresh(win);
             single_record noRecord;
             return noRecord;
         }
@@ -136,8 +148,9 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
-            return searchResults;
+                mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+                wrefresh(win);
+            return searchResults;}
         }
         // Searching by year range
         vector<single_record> searchByYear (int yearStart, int yearEnd){
@@ -149,8 +162,9 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
-            return searchResults;
+                mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+                wrefresh(win);
+            return searchResults;}
         }
 
 /* ------------------- Searching for and deleting records ------------------- */
@@ -161,14 +175,17 @@ class database {
                 if (name == mangaList.at(i).getName()){
                     if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl << endl;
+                        mvwprintw(win, 3, 1, "Entry deleted.");
+                        wrefresh(win);
                         return;
                     }
                     else {
-                        cout << "Entry not deleted." << endl << endl;
+                        mvwprintw(win, 3, 1, "Entry deleted.");
+                        wrefresh(win);
                         return;
                     }
-                }}
+                }
+            }
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 // Turns all letters of manga's name lower case to remove case sensitivity
@@ -184,15 +201,19 @@ class database {
                 if (lowercaseName.find(lowercaseUserInput) != -1){
                     if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl << endl;
+                        mvwprintw(win, 3, 1, "Entry deleted.");
+                        wrefresh(win);
                         return;
                     }
                     else {
-                        cout << "Entry not deleted." << endl << endl;
+                        mvwprintw(win, 3, 1, "Entry deleted.");
+                        wrefresh(win);
                         return;
                     }
-                }}
-            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                }
+            }
+            mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+            wrefresh(win);
         }
         // Searching by exact year
         void deleteByYear (int year){
@@ -208,7 +229,8 @@ class database {
                 displayInformation(i, searchResults.at(i));
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+                wrefresh(win);
                 return;}
 
             deleteConfirmationYear(searchResults);
@@ -223,10 +245,10 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                mvwprintw(win, 3, 1, "The manga that you are looking for cannot be found. Please try again.");
+                wrefresh(win);
                 return;}
             for (int i = 0; i < searchResults.size(); i++){
-                cout << endl;
                 displayInformation(i, searchResults.at(i));
             }
             deleteConfirmationYear(searchResults);
@@ -236,26 +258,32 @@ class database {
         bool deleteConfirmation (int index, single_record manga){
             //bool userConfirmation = false;
             // Use the parameter manga to display manga later once we have a function to do so
-            cout << "Are you sure you would like to delete: " << endl; 
+            mvwprintw(win, 1, 1, "Are you sure you would like to delete: ");
+            wrefresh(win); 
             displayInformation(index, manga);
-            cout << endl << "(Y)es or (N)o: ";
+            mvwprintw(win, 2, 1, "(Y)es or (N)o: ");
+            wrefresh(win);
             string userInput; 
             cin >> userInput;
             userInput[0] = tolower(userInput[0]); // Turns any input to lowercase
             while ((userInput != "y" && userInput != "n")|| userInput.length() != 1){
-                cout << "Please enter a valid response. (Y)es or (N)o: ";
+                mvwprintw(win, 2, 1, "Please enter a valid response. (Y)es or (N)o: ");
+                wrefresh(win);
                 cin >> userInput;
             }
             if (userInput == "y"){return true;}
             return false;
         }
+
         void deleteConfirmationYear (vector<single_record> searchResults){
-            cout << endl;
-            cout << "Enter the entry # of the one you want to delete: ";
+            mvwprintw(win, 1, 1, "Enter the entry # of the one you want to delete");
+            wrefresh(win);
+
             string userStr;
             cin >> userStr;
             while (!realNum (userStr, searchResults.size())){
-                cout << "The entry # inputted is invalid please try again.";
+                mvwprintw(win, 2, 1, "The entry # inputted is invalid, please try again: ");
+                wrefresh(win);
                 cin >> userStr;
             }
             
@@ -268,10 +296,12 @@ class database {
                         mangaList.erase(mangaList.begin() + i);
                     }
                 }
-                cout << "Entry has been deleted." << endl;
+                mvwprintw(win, 1, 1, "Entry has been deleted.");
+                wrefresh(win);
             }
             else {
-                cout << "Entry has not been deleted." << endl;
+                mvwprintw(win, 1, 1, "Entry has been deleted.");
+                wrefresh(win);
             }
 
         }
@@ -346,34 +376,55 @@ class database {
         
         // Displaying a manga's information
         void displayInformation(int index, single_record manga){
-            cout << "Entry #" << index + 1 << endl;
-            cout << "=========================================" << endl;
-            cout << "Name: " << manga.getName() << "." << endl;
+            for (int pos = 0; pos < mangaList.size(); pos ++){
+                mvwprintw(win, pos*15 + 1, 1, "Entry #");
+                string str = to_string(pos + 1);
+                mvwprintw(win, pos*15 + 1, 8, str);
 
-            cout << "Genres: ";
-            vector<string> genres = manga.getGenres();
-            for (int i = 0; i < genres.size() - 1; i++){
-                cout << genres.at(i) << ", ";
+                mvwprintw(win, pos*15 + 2, 1,"=========================================");
+                
+                mvwprintw(win, pos*15 + 3, 1, "Name: ");
+                string name = mangaList.at(pos).getName();
+                mvwprintw(win, pos*15 + 3, 6, name);
+                mvwprintw(win, pos*15 + 3, mangaList.at(pos).getName().length() + 6, ".");
+
+                mvwprintw(win, pos*15 + 4, 1, "Genres: ");
+                vector<string> genres = mangaList.at(pos).getGenres();
+                int rowPos = 9;
+                for (int i = 0; i < genres.size() - 1; i++){
+                    mvwprintw(win, pos*15 + 4, rowPos, genres.at(i));
+                    mvwprintw(win, pos*15 + 4, rowPos + 2, ", ");
+                    rowPos += genres.at(i).length() + 2;
+                }
+                mvwprintw(win, pos* 15 + 4, rowPos, genres.at(genres.size() - 1) + ".");
+
+                mvwprintw(win, pos*15 + 5, 1, "Authors: ");
+                rowPos = 10;
+                vector<string> authors = mangaList.at(pos).getAuthors();
+                for (int i = 0; i < authors.size() - 1; i++){
+                    mvwprintw(win, pos*15 + 5, rowPos, authors.at(i) + ", ");
+                    rowPos += authors.at(i).length() + 2;
+                }
+                mvwprintw(win, pos* 15 + 5, rowPos, authors.at(authors.size() - 1) + ".");
+
+                mvwprintw(win, pos*15 + 6, 1,"Status: ");
+                if (mangaList.at(pos).getStatus() == true){
+                    mvwprintw(win, pos*15 + 6, 9,"Releasing.");}
+                else {mvwprintw(win, pos*15 + 6, 9,"Completed.");}
+
+                mvwprintw(win, pos*15 + 7, 1, "Year of release: ");
+                mvwprintw(win, pos*15 + 7, 17, "Year of release: ");
             }
-            cout << genres.at(genres.size() - 1) << "." << endl;
-
-            cout << "Authors: ";
-            vector<string> authors = manga.getAuthors();
-            for (int i = 0; i < authors.size() - 1; i++){
-                cout << authors.at(i) << ", ";
-            }
-            cout << authors.at(authors.size() - 1) << "." << endl;
-
-            cout << "Status: ";
-            if (manga.getStatus()){cout << "Releasing." << endl;}
-            else {cout << "Completed." << endl;}
-
-            cout << "Year of release: " << manga.getYear() << "." << endl;
+            wrefresh(win);
         }
 
         // Deconstructor
-        ~database(){}
+        ~database(){
+            endwin();
+        }
 
     private:
         vector<single_record> mangaList = {};
+        int yMax, xMax;
+        WINDOW *win = newwin(yMax*0.70, xMax*0.70, yMax, xMax);
 };
