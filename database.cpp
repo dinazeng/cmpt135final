@@ -11,7 +11,6 @@ using namespace std;
 
 class database {
     public:
-
         // Default constructor
         database(string input){ readFile(input); }
 
@@ -24,17 +23,19 @@ class database {
                 // Asks user if they meant something else. 
                 //Yes = rerun function with correct name
                 //No = quit program
-                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: ";
-                char userAnswer;
+                cout << "The file does not exist. Did you mean something else? (Y)es or (N)o: "; ///FIX THIS
+                string userAnswer;
                 cin >> userAnswer;
-                if (tolower(userAnswer) == 'n'){
+                userAnswer = tolower(userAnswer[0]);
+                    while (userAnswer != "y" && userAnswer != "n"){
+                        cout << "Your response is invalid, please try again: ";
+                        cin >> userAnswer;}
+                if (tolower(userAnswer[0]) == 'n'){
                     cmpt::error("\nThe file inputted does not exist. Please try again.");}
-                else {
-                    cout << "What is the name of the file?";
-                    string correctInput;
-                    cin >> correctInput;
-                    fstream inFile(correctInput);
-                }
+                cout << "What is the name of the file?";
+                string correctInput;
+                cin >> correctInput;
+                fstream inFile(correctInput);
             }
 
             // Read in each input (line) from the file
@@ -50,13 +51,16 @@ class database {
                 entry = entry.substr(entry.find("|") + 1); // Get rid of trailing |
 
                 // Getting Genres
+                // Get rid of starting and trailing {}|
                 string mangaGenres = entry.substr(0, entry.find("|"));
-                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}|
+                // Get rid of starting and trailing {}|
+                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); 
                 while (true){
                     string mangaGenre;
                     if (mangaGenres.find(",") != -1){ // There are remaining genres
                         mangaGenre = mangaGenres.substr(0, mangaGenres.find(","));
-                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); // Get rid of comma and space
+                        // Get rid of comma and space
+                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); 
                         manga.add_genre(mangaGenre);}
                     else { // Last genre in the list
                         manga.add_genre(mangaGenres);
@@ -66,12 +70,14 @@ class database {
                 
                 // Getting authors
                 string mangaAuthors = entry.substr(0, entry.find("|"));
-                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
+                // Get rid of starting and trailing {}:
+                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); 
                 while (true){
                     string mangaAuthor;
                     if (mangaAuthors.find(",") != -1){ // There are remaining genres
                         mangaAuthor = mangaAuthors.substr(0, mangaAuthors.find(","));
-                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); // Get rid of comma and space
+                        // Get rid of comma and space
+                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); 
                         manga.add_author(mangaAuthor);}
                     else { // Last genre in the list
                         manga.add_author(mangaAuthors);
@@ -153,8 +159,7 @@ class database {
             // The case where user enters in exact name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){
-                    bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl << endl;
                         return;
@@ -177,8 +182,7 @@ class database {
                     lowercaseUserInput.push_back(tolower(character));
                 }
                 if (lowercaseName.find(lowercaseUserInput) != -1){
-                    bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
-                    if (userConfirmation == true){
+                    if (deleteConfirmation(i, mangaList.at(i))){
                         mangaList.erase(mangaList.begin() + i);
                         cout << "Entry deleted." << endl << endl;
                         return;
@@ -257,8 +261,7 @@ class database {
             
             // Account for index display, decrement by 1 for proper index
             int userInput = stoi (userStr) - 1;
-            bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
-            if (userConfirmation == true){
+            if (deleteConfirmation (userInput, searchResults.at(userInput))){
                 // Loop through the entries, find matching name of user's input then delete
                 for (int i = 0; i < mangaList.size(); i++){
                     if (mangaList.at(i).getName() == searchResults.at(userInput).getName()){
@@ -292,12 +295,13 @@ class database {
             // Iteration for beginning index in unsorted section of alphabeticalList
             for (int i = 0; i < alphabeticalList.size() - 1; i++){
                 // Finding the minimum element in the current unsorted alphabeticalList
-                // Set index of the 'minimum element' default to the first index of unsorted alphabeticalList
+                // Set index of the 'minimum element' 
+                //default to the first index of unsorted alphabeticalList
                 minIndex = i;
                 // Iterate through the unsorted section of the vector
                 for (int j = i + 1; j < alphabeticalList.size(); j++){
                     // Compare the first letters of the titles
-                    if (alphabeticalList.at(j).getName() < alphabeticalList.at(minIndex).getName()){
+                    if (alphabeticalList.at(j).getName()<alphabeticalList.at(minIndex).getName()){
                         minIndex = j;
                     }
                 }
@@ -361,12 +365,8 @@ class database {
             cout << authors.at(authors.size() - 1) << "." << endl;
 
             cout << "Status: ";
-            if (manga.getStatus() == true){
-                cout << "Releasing." << endl;
-            }
-            else {
-                cout << "Completed." << endl;
-            }
+            if (manga.getStatus()){cout << "Releasing." << endl;}
+            else {cout << "Completed." << endl;}
 
             cout << "Year of release: " << manga.getYear() << "." << endl;
         }
