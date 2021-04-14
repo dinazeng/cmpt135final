@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+//#include <ncurses.h>
 using namespace std;
 
 class single_record{
