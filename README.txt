@@ -24,6 +24,8 @@ Limitations
 -when user is adding a new entry, entering "exit" at anytime will stop the program
   -> if anything is called exit this will become a bug
 
+limit of 100 characters per manga name and 10 charaters per year
+
 
 Known Bugs
 ----------

@@ -1,4 +1,5 @@
 //menu class
+#include "cmpt_error.h"
 #include "database.h"
 #include "record.h"
 #include "menu.h"
@@ -188,7 +189,7 @@ class menu{
                 } 
                 //stops the program
                 else if (response == "q"){
-                    cout << "Have a great day!!\n";
+                   cout << "Have a great day!!\n";
                     //creates a text file of the database
                     ofstream dataFile("database.txt");
                     //adds elements to the file
@@ -197,18 +198,18 @@ class menu{
                     for (int pos = 0; pos < file.size(); pos++){
                         single_record record = file.at(pos);
                         //add name
-                        returnStr = record.getName() + ",{";
+                        returnStr = record.getName() + "|{";
                         //add genres
                         for (int gen = 0; gen < record.getGenres().size() - 1; gen++){
                             returnStr += record.getGenres().at(gen) + ", ";}
-                        returnStr += record.getGenres().at(record.getGenres().size()-1) + "},{";
+                        returnStr += record.getGenres().at(record.getGenres().size()-1) + "}|{";
                         //add authors
                         for (int loc = 0; loc < record.getAuthors().size() - 1; loc++){
                             returnStr += record.getAuthors().at(loc) + ", ";}
-                        returnStr += record.getAuthors().at(record.getAuthors().size()-1) + "},";
+                        returnStr += record.getAuthors().at(record.getAuthors().size()-1) + "}|";
                         //add status and year
-                        if(record.getStatus()){returnStr += "releasing," + to_string(record.getYear());}
-                        else {returnStr += "completed," + to_string(record.getYear());}
+                        if(record.getStatus()){returnStr += "releasing|" + to_string(record.getYear());}
+                        else {returnStr += "completed|" + to_string(record.getYear());}
                         dataFile << returnStr << endl;
                     }
 
@@ -231,15 +232,17 @@ class menu{
 
         //prints the available choices in menu
         void printMenu(){
-            cout << "\nMain Menu:\n"
-                 << "\n(A)dd a manga.\n"
-                 << "(F)ind a manga.\n"
-                 << "(D)elete a manga.\n"
-                 << "(L)ist mangas.\n"
-                 << "(Q)uit.\n\n"
-                 << "Enter the LETTER of your choice: ";
-            cin >> response;
-            if (response.length() != 0){response [0] = tolower(response[0]);}
+            initscr();
+            
+            mvprintw(10, 1, "Main Menu: ");
+            mvprintw(12, 1, "(A)dd a manga.");
+            mvprintw(13, 1, "(D)elete a manga.");
+            mvprintw(14, 1, "(L)ist mangas.");
+            mvprintw(15, 1, "(Q)uit.");
+            mvprintw(17, 1, "Enter the letter of your choice: ");
+            refresh();
+
+            response = getch();
         }
         
         //changes all characters in a string to lower case
