@@ -1,7 +1,6 @@
 #include "cmpt_error.h"
 //#include "database.h"
 //#include "record.h"
-#include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -41,7 +40,6 @@ class single_record{
         //print everything
         void printEntry(){
             initscr();
-            erase();
             refresh();
 
             mvprintw(1, 1,"=========================================");
@@ -49,8 +47,8 @@ class single_record{
             mvprintw(3, 1, "Name: ");
             char nameArr[name.length()];                
             for (int n = 0; n < name.length(); n++){nameArr[n] = name[n];}
-            mvprintw(3, 6, nameArr);
-            mvprintw(3, name.length() + 6, ".");
+            mvprintw(3, 7, nameArr);
+            mvprintw(3, name.length() + 7, ".");
 
             mvprintw(4, 1, "Genres: ");
             int rowPos = 9;
@@ -61,11 +59,13 @@ class single_record{
                 mvprintw(4, rowPos + genres.at(i).length(), ", ");
                 rowPos += genres.at(i).length() + 2;
             }
-            char arrGen[genres.at(genres.size() - 1).length()];
-            for (int n = 0; n < genres.at(genres.size() - 1).length(); n++){
-                arrGen[n] = genres.at(genres.size() - 1)[n];}
-            mvprintw(4, rowPos, arrGen);
-            mvprintw(4, rowPos + genres.at(genres.size() - 1).length(), ".");
+            if (genres.size() > 0){
+                char arrGen[genres.at(genres.size() - 1).length()];
+                for (int n = 0; n < genres.at(genres.size() - 1).length(); n++){
+                    arrGen[n] = genres.at(genres.size() - 1)[n];}
+                mvprintw(4, rowPos, arrGen);
+                mvprintw(4, rowPos + genres.at(genres.size() - 1).length(), ".");
+            }
                 
             mvprintw(5, 1, "Authors: ");
             rowPos = 10;
@@ -76,11 +76,13 @@ class single_record{
                 mvprintw(5, rowPos + authors.at(i).length(), ", ");
                 rowPos += authors.at(i).length() + 2;
             }
-            char arrAu[authors.at(authors.size() - 1).length()];
-            for (int n = 0; n < authors.at(authors.size() - 1).length(); n++){
-                arrAu[n] = authors.at(authors.size() - 1)[n];}
-            mvprintw(5, rowPos, arrAu);
-            mvprintw(5, rowPos + authors.at(authors.size() - 1).length(), ".");
+            if (authors.size() > 0){
+                char arrAu[authors.at(authors.size() - 1).length()];
+                for (int n = 0; n < authors.at(authors.size() - 1).length(); n++){
+                    arrAu[n] = authors.at(authors.size() - 1)[n];}
+                mvprintw(5, rowPos, arrAu);
+                mvprintw(5, rowPos + authors.at(authors.size() - 1).length(), "."); 
+            }
 
             mvprintw(6, 1,"Status: ");
             if (isReleasing == true){mvprintw(6, 9,"Releasing.");}
@@ -130,7 +132,7 @@ class database {
                 //Yes = rerun function with correct name
                 //No = quit program
                 initscr();
-                mvprintw(1, 1, "The file does not exist. Did you mean something else? (Y)es or (N)o: ");
+                mvprintw(1, 1,"File does not exist. Did you mean something else? (Y)es or (N)o: ");
                 refresh();
                 char userResponse = getch();
                 while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
@@ -163,12 +165,14 @@ class database {
 
                 // Getting Genres
                 string mangaGenres = entry.substr(0, entry.find("|"));
-                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); // Get rid of starting and trailing {}|
+                // Get rid of starting and trailing {}|
+                mangaGenres = mangaGenres.substr(1, mangaGenres.size() - 2); 
                 while (true){
                     string mangaGenre;
                     if (mangaGenres.find(",") != -1){ // There are remaining genres
                         mangaGenre = mangaGenres.substr(0, mangaGenres.find(","));
-                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); // Get rid of comma and space
+                        // Get rid of comma and space
+                        mangaGenres = mangaGenres.substr(mangaGenres.find(",") + 2); 
                         manga.add_genre(mangaGenre);}
                     else { // Last genre in the list
                         manga.add_genre(mangaGenres);
@@ -178,12 +182,14 @@ class database {
                 
                 // Getting authors
                 string mangaAuthors = entry.substr(0, entry.find("|"));
-                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); // Get rid of starting and trailing {}:
+                // Get rid of starting and trailing {}:
+                mangaAuthors = mangaAuthors.substr(1, mangaAuthors.size() - 2); 
                 while (true){
                     string mangaAuthor;
                     if (mangaAuthors.find(",") != -1){ // There are remaining genres
                         mangaAuthor = mangaAuthors.substr(0, mangaAuthors.find(","));
-                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); // Get rid of comma and space
+                        mangaAuthors = mangaAuthors.substr(mangaAuthors.find(",") + 2); 
+                        // Get rid of comma and space
                         manga.add_author(mangaAuthor);}
                     else { // Last genre in the list
                         manga.add_author(mangaAuthors);
@@ -227,12 +233,7 @@ class database {
                     return mangaList.at(i);
                 }
             }
-            initscr();
-            mvprintw(1,1,"The manga that you are looking for cannot be found. Please try again.");
-            refresh();
-            char stop = getch();
-            erase();
-            endwin();
+            notFound();
             single_record noRecord;
             return noRecord;
         }
@@ -246,12 +247,7 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                initscr();
-                mvprintw(1,1,"The manga that you are looking for cannot be found. Please try again.");
-                refresh();
-                char stop = getch();
-                erase();
-                endwin();
+                notFound();
             }
             return searchResults;
         }
@@ -265,7 +261,8 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";}
+                notFound();
+            }
             return searchResults;
         }
 
@@ -278,14 +275,25 @@ class database {
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
                     if (userConfirmation == true){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl << endl;
+                        initscr();
+                        mvprintw(1,1,"Entry Deleted");
+                        refresh();
+                        char stop = getch();
+                        erase();
+                        endwin();
                         return;
                     }
                     else {
-                        cout << "Entry not deleted." << endl << endl;
+                        initscr();
+                        mvprintw(1,1,"Entry NOT Deleted");
+                        refresh();
+                        char stop = getch();
+                        erase();
+                        endwin();
                         return;
                     }
-                }}
+                }
+            }
             // The case where user enters in a "substring" of the name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 // Turns all letters of manga's name lower case to remove case sensitivity
@@ -302,15 +310,26 @@ class database {
                     bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
                     if (userConfirmation == true){
                         mangaList.erase(mangaList.begin() + i);
-                        cout << "Entry deleted." << endl << endl;
+                        initscr();
+                        mvprintw(1,1,"Entry Deleted");
+                        refresh();
+                        char stop = getch();
+                        erase();
+                        endwin();
                         return;
                     }
                     else {
-                        cout << "Entry not deleted." << endl << endl;
+                        initscr();
+                        mvprintw(1,1,"Entry NOT Deleted");
+                        refresh();
+                        char stop = getch();
+                        erase();
+                        endwin();
                         return;
                     }
-                }}
-            cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                }
+            }
+            notFound();
         }
         // Searching by exact year
         void deleteByYear (int year){
@@ -326,7 +345,7 @@ class database {
                 displayInformation(i, searchResults.at(i));
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                notFound();
                 return;}
 
             deleteConfirmationYear(searchResults);
@@ -341,10 +360,9 @@ class database {
                 }
             }
             if (searchResults.size() == 0){
-                cout << "The manga that you are looking for cannot be found. Please try again.\n";
+                notFound();
                 return;}
             for (int i = 0; i < searchResults.size(); i++){
-                cout << endl;
                 displayInformation(i, searchResults.at(i));
             }
             deleteConfirmationYear(searchResults);
@@ -352,31 +370,39 @@ class database {
 
         // Ask for confirmation on deleting record
         bool deleteConfirmation (int index, single_record manga){
-            //bool userConfirmation = false;
             // Use the parameter manga to display manga later once we have a function to do so
-            cout << "Are you sure you would like to delete: " << endl; 
+            initscr();
+            mvprintw(1,1, "Are you sure you would like to delete: ");
+            char stop = getch();
             displayInformation(index, manga);
-            cout << endl << "(Y)es or (N)o: ";
-            string userInput; 
-            cin >> userInput;
-            userInput[0] = tolower(userInput[0]); // Turns any input to lowercase
-            while ((userInput != "y" && userInput != "n")|| userInput.length() != 1){
-                cout << "Please enter a valid response. (Y)es or (N)o: ";
-                cin >> userInput;
+            mvprintw(1, 1, "Confirm (Y)es or (N)o: ");
+            refresh();
+            int userResponse = getch();
+            while (userResponse != 'n' && userResponse != 'y'){
+                mvprintw(11, 1, "Your response is invalid, please try again: ");
+                refresh();
+                userResponse = getch();
             }
-            if (userInput == "y"){return true;}
+            erase();
+            refresh();
+            endwin();
+            if (userResponse == 'y'){return true;}
             return false;
         }
+
         void deleteConfirmationYear (vector<single_record> searchResults){
-            cout << endl;
-            cout << "Enter the entry # of the one you want to delete: ";
-            string userStr;
-            cin >> userStr;
+            initscr();
+            mvprintw(1, 1, "Enter the entry # of the one you want to delete: ");
+            refresh();
+            char userStr [3];
+            getstr(userStr);
             while (!realNum (userStr, searchResults.size())){
-                cout << "The entry # inputted is invalid please try again.";
-                cin >> userStr;
+                mvprintw(3, 1, "The entry # inputted is invalid please try again: ");
+                refresh();
+                getstr(userStr);
             }
             
+            erase();
             // Account for index display, decrement by 1 for proper index
             int userInput = stoi (userStr) - 1;
             bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
@@ -387,12 +413,12 @@ class database {
                         mangaList.erase(mangaList.begin() + i);
                     }
                 }
-                cout << "Entry has been deleted." << endl;
+                mvprintw(1, 1, "Entry has been deleted.");
             }
-            else {
-                cout << "Entry has not been deleted." << endl;
-            }
-
+            else {mvprintw(1, 1, "Entry has NOT been deleted.");}
+            refresh();
+            char stop = getch();
+            endwin();
         }
         
          bool realNum (string userInput, int end){
@@ -409,24 +435,25 @@ class database {
 
             // Using selection sort, sort the manga based on the first character of names
             int minIndex;
-            vector<single_record> alphabeticalList = mangaList;
+            vector<single_record> alphaList = mangaList;
 
             // Iteration for beginning index in unsorted section of alphabeticalList
-            for (int i = 0; i < alphabeticalList.size() - 1; i++){
+            for (int i = 0; i < alphaList.size() - 1; i++){
                 // Finding the minimum element in the current unsorted alphabeticalList
-                // Set index of the 'minimum element' default to the first index of unsorted alphabeticalList
+                // Set index of the 'minimum element' default 
+                //to the first index of unsorted alphabeticalList
                 minIndex = i;
                 // Iterate through the unsorted section of the vector
-                for (int j = i + 1; j < alphabeticalList.size(); j++){
+                for (int j = i + 1; j < alphaList.size(); j++){
                     // Compare the first letters of the titles
-                    if (alphabeticalList.at(j).getName() < alphabeticalList.at(minIndex).getName()){
+                    if (alphaList.at(j).getName() < alphaList.at(minIndex).getName()){
                         minIndex = j;
                     }
                 }
                 // Swap element at the minIndex with beginning of unsorted vector
-                swap(alphabeticalList.at(minIndex), alphabeticalList.at(i));
+                swap(alphaList.at(minIndex), alphaList.at(i));
             }
-            return alphabeticalList;
+            return alphaList;
         }
 
         vector<single_record> listAlphabeticalReverse(){
@@ -469,8 +496,8 @@ class database {
             refresh();
 
             mvprintw(1, 1, "Entry #");
-            char entry[3];
-            for (int n = 0; n < 3; n++){entry[n] = to_string(index)[n];}
+            char entry[to_string(index).length()];
+            for (int n = 0; n < 3; n++){entry[n] = to_string(index + 1)[n];}
             mvprintw(1, 8, entry);
 
             mvprintw(2, 1,"=========================================");
@@ -478,8 +505,8 @@ class database {
             mvprintw(3, 1, "Name: ");
             char nameArr[manga.getName().length()];                
             for (int n = 0; n < manga.getName().length(); n++){nameArr[n] = manga.getName()[n];}
-            mvprintw(3, 6, nameArr);
-            mvprintw(3, manga.getName().length() + 6, ".");
+            mvprintw(3, 7, nameArr);
+            mvprintw(3, manga.getName().length() + 7, ".");
 
             mvprintw(4, 1, "Genres: ");
             int rowPos = 9;
@@ -496,6 +523,7 @@ class database {
                 arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];}
             mvprintw(4, rowPos, arrGen);
             mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+            
                 
             mvprintw(5, 1, "Authors: ");
             rowPos = 10;
@@ -508,10 +536,10 @@ class database {
                 rowPos += manga.getAuthors().at(i).length() + 2;
             }
             char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
-            for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size() - 1).length(); n++){
+            for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size()-1).length(); n++){
                 arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];}
             mvprintw(5, rowPos, arrAu);
-            mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size() - 1).length(), ".");
+            mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
             mvprintw(6, 1,"Status: ");
             if (manga.getStatus() == true){mvprintw(6, 9,"Releasing.");}
@@ -531,6 +559,15 @@ class database {
             endwin();
         }
 
+        void notFound(){
+            initscr();
+            mvprintw(1,1,"The manga that you are looking for cannot be found. Please try again.");
+            refresh();
+            char stop = getch();
+            erase();
+            endwin();
+        }
+
         // Deconstructor
         ~database(){}
 
@@ -543,7 +580,8 @@ class menu{
         //default and only constructor
         menu(){
             initscr();
-            mvprintw(1,1, "Welcome to the Manga Database!\n-----------------------------");
+            mvprintw(1,1, "Welcome to the Manga Database!\n---------------------------------");
+            char stop = getch();
             //continues until user selects quit
             while (response != 'q'){
                 erase();
@@ -632,16 +670,16 @@ class menu{
                 //delete a manga by its name or year of release in the database
                 else if (response == 'd'){
                     mvprintw(1, 1, "You are currently: deleting an entry.");
-                    mvprintw(2, 1, "You can delete by: ");
-                    mvprintw(3, 1, "(N)ame of manga");
-                    mvprintw(4, 1, "(Y)ear of release");
-                    mvprintw(5, 1, "(R)eturn to main menu");
-                    mvprintw(6, 1, "Enter the letter of your choice: ");
+                    mvprintw(3, 1, "You can delete by: ");
+                    mvprintw(5, 1, "(N)ame of manga");
+                    mvprintw(6, 1, "(Y)ear of release");
+                    mvprintw(8, 1, "(R)eturn to main menu");
+                    mvprintw(10, 1, "Enter the letter of your choice: ");
                     refresh();
                     
                     char userResponse = getch();
                     while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
-                        mvprintw(8, 1, "Your response is invalid, please try again: ");
+                        mvprintw(12, 1, "Your response is invalid, please try again: ");
                         refresh();
                         userResponse = getch();
                     }
@@ -652,9 +690,9 @@ class menu{
                     if(userResponse == 'n'){
                         mvprintw(1, 1, "Enter the name of the manga you are deleting: ");
                         refresh();
-                        erase();
                         char mangaName[100];
                         getstr(mangaName);
+                        erase();
                         info-> deleteByName(mangaName);
                     }
 
@@ -704,11 +742,11 @@ class menu{
                 //list the database by alphatical order or numerical order
                 else if (response == 'l'){
                     mvprintw(1, 1, "You are currently: listing entries.");
-                    mvprintw(2, 1, "You can list by: ");
-                    mvprintw(3, 1, "(N)ame of manga");
-                    mvprintw(4, 1, "(Y)ear of release");
-                    mvprintw(5, 1, "(R)eturn to main menu");
-                    mvprintw(6, 1, "Enter the letter of your choice: ");
+                    mvprintw(3, 1, "You can list by: ");
+                    mvprintw(5, 1, "(N)ame of manga");
+                    mvprintw(6, 1, "(Y)ear of release");
+                    mvprintw(8, 1, "(R)eturn to main menu");
+                    mvprintw(10, 1, "Enter the letter of your choice: ");
                     refresh();
                     
                     int userResponse = getch();
@@ -719,7 +757,6 @@ class menu{
                     }
 
                     erase();
-                    refresh();
 
                     if(userResponse == 'n'){
                         mvprintw(1,1, "Did you want them listed in (A)lphabetical order or"); 
@@ -756,6 +793,7 @@ class menu{
                 //stops the program
                 else if (response == 'q'){
                     mvprintw(1,1, "Have a great day!!");
+                    char stop = getch();
                     endwin();
                     //creates a text file of the database
                     ofstream dataFile("database.txt");
@@ -769,13 +807,19 @@ class menu{
                         //add genres
                         for (int gen = 0; gen < record.getGenres().size() - 1; gen++){
                             returnStr += record.getGenres().at(gen) + ", ";}
-                        returnStr += record.getGenres().at(record.getGenres().size()-1) + "}|{";
+                        if (record.getGenres().size() > 0){
+                            returnStr += record.getGenres().at(record.getGenres().size()-1);}
+                        returnStr += "}|{";
                         //add authors
                         for (int loc = 0; loc < record.getAuthors().size() - 1; loc++){
                             returnStr += record.getAuthors().at(loc) + ", ";}
-                        returnStr += record.getAuthors().at(record.getAuthors().size()-1) + "}|";
+                        if (record.getAuthors().size() > 0){
+                            returnStr += record.getAuthors().at(record.getAuthors().size()-1);
+                        }
+                        returnStr += "}|";
                         //add status and year
-                        if(record.getStatus()){returnStr += "releasing|" + to_string(record.getYear());}
+                        if(record.getStatus()){
+                            returnStr += "releasing|" + to_string(record.getYear());}
                         else {returnStr += "completed|" + to_string(record.getYear());}
                         dataFile << returnStr << endl;
                     }
@@ -821,71 +865,91 @@ class menu{
 
          //prints all elements in a vector
         void printDatabase(vector <single_record> mangaList){
-            erase();
-             for (int pos = 0; pos < mangaList.size(); pos ++){
-                mvprintw(pos*9 + 1, 1, "Entry #");
-                char entry[3];
-                for (int n = 0; n < 3; n++){entry[n] = to_string(pos+1)[n];}
-                mvprintw(pos*9 + 1, 8, entry);
-
-                mvprintw(pos*9 + 2, 1,"=========================================");
-                
-                mvprintw(pos*9 + 3, 1, "Name: ");
-                string name = mangaList.at(pos).getName();
-                char nameArr[name.length()];
-                for (int n = 0; n < name.length(); n++){nameArr[n] = name[n];}
-                mvprintw(pos*9 + 3, 6, nameArr);
-                mvprintw(pos*9 + 3, mangaList.at(pos).getName().length() + 6, ".");
-
-                mvprintw(pos*9 + 4, 1, "Genres: ");
-                vector<string> genres = mangaList.at(pos).getGenres();
-                int rowPos = 9;
-                for (int i = 0; i < genres.size() - 1; i++){
-                    char arr[genres.at(i).length()];
-                    for (int n = 0; n < genres.at(i).length(); n++){arr[n] = genres.at(i)[n];}
-                    mvprintw(pos*9 + 4, rowPos, arr);
-                    mvprintw(pos*9 + 4, rowPos + genres.at(i).length(), ", ");
-                    rowPos += genres.at(i).length() + 2;
+            char input = '0';
+            int loc = 0;
+            while (input != 'e'){
+                input = printEntry(loc, mangaList);
+                if (input == 'c'){
+                    if (loc != mangaList.size() - 1){loc++;}
                 }
-                char arrGen[genres.at(genres.size() - 1).length()];
-                for (int n = 0; n < genres.at(genres.size() - 1).length(); n++){
-                    arrGen[n] = genres.at(genres.size() - 1)[n];}
-                mvprintw(pos*9 + 4, rowPos, arrGen);
-                mvprintw(pos*9 + 4, rowPos + genres.at(genres.size() - 1).length(), ".");
-
-                mvprintw(pos*9 + 5, 1, "Authors: ");
-                rowPos = 10;
-                vector<string> authors = mangaList.at(pos).getAuthors();
-                for (int i = 0; i < authors.size() - 1; i++){
-                    char arrAu[authors.at(i).length()];
-                    for (int n = 0; n < authors.at(i).length(); n++){arrAu[n] = authors.at(i)[n];}
-                    mvprintw(pos*9 + 5, rowPos, arrAu);
-                    mvprintw(pos*9 + 5, rowPos + authors.at(i).length(), ", ");
-                    rowPos += authors.at(i).length() + 2;
+                else if (input == 'z' ){
+                    if (loc != 0){loc--;}
                 }
-                char arrAu[authors.at(authors.size() - 1).length()];
-                for (int n = 0; n < authors.at(authors.size() - 1).length(); n++){
-                    arrAu[n] = authors.at(authors.size() - 1)[n];}
-                mvprintw(pos*9 + 5, rowPos, arrAu);
-                mvprintw(pos*9 + 5, rowPos + authors.at(authors.size() - 1).length(), ".");
-
-                mvprintw(pos*9 + 6, 1,"Status: ");
-                if (mangaList.at(pos).getStatus() == true){mvprintw(pos*9 + 6, 9,"Releasing.");}
-                else {mvprintw(pos*9 + 6, 9,"Completed.");}
-
-                mvprintw(pos*9 + 7, 1, "Year of release: ");
-                string year = to_string(mangaList.at(pos).getYear());
-                char arrYear[4];
-                for (int n = 0; n < 4; n++){arrYear[n] = year[n];}
-                mvprintw(pos*9 + 7, 18, arrYear);
             }
+        }
+
+        char printEntry(int index, vector <single_record> mangaList){
+            erase();
+            single_record manga = mangaList.at(index);
+            mvprintw(1, 1, "Entry #");
+            char entry[to_string(index).length()];
+            for (int n = 0; n < 3; n++){entry[n] = to_string(index +1)[n];}
+            mvprintw(1, 8, entry);
+
+            mvprintw(2, 1,"=========================================");
+                
+            mvprintw(3, 1, "Name: ");
+            char nameArr[manga.getName().length()];                
+            for (int n = 0; n < manga.getName().length(); n++){nameArr[n] = manga.getName()[n];}
+            mvprintw(3, 7, nameArr);
+            mvprintw(3, manga.getName().length() + 7, ".");
+
+            mvprintw(4, 1, "Genres: ");
+            int rowPos = 9;
+            for (int i = 0; i < manga.getGenres().size() - 1; i++){
+                char arr[manga.getGenres().at(i).length()];
+                for (int n = 0; n < manga.getGenres().at(i).length(); n++){
+                    arr[n] = manga.getGenres().at(i)[n];}
+                mvprintw(4, rowPos, arr);
+                mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
+                rowPos += manga.getGenres().at(i).length() + 2;
+            }
+            char arrGen[manga.getGenres().at(manga.getGenres().size() - 1).length()];
+            for (int n = 0; n < manga.getGenres().at(manga.getGenres().size() - 1).length(); n++){
+                arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];}
+            mvprintw(4, rowPos, arrGen);
+            mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+                
+            mvprintw(5, 1, "Authors: ");
+            rowPos = 10;
+            for (int i = 0; i < manga.getAuthors().size() - 1; i++){
+                char arrAu[manga.getAuthors().at(i).length()];
+                for (int n = 0; n < manga.getAuthors().at(i).length(); n++){
+                    arrAu[n] = manga.getAuthors().at(i)[n];}
+                mvprintw(5, rowPos, arrAu);
+                mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
+                rowPos += manga.getAuthors().at(i).length() + 2;
+            }
+            char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
+            for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size()-1).length(); n++){
+                arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];}
+            mvprintw(5, rowPos, arrAu);
+            mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
+
+            mvprintw(6, 1,"Status: ");
+            if (manga.getStatus() == true){mvprintw(6, 9,"Releasing.");}
+            else {mvprintw(6, 9,"Completed.");}
+
+            mvprintw(7, 1, "Year of release: ");
+            string yearRel = to_string(manga.getYear());
+            char arrYear[4];
+            for (int n = 0; n < 4; n++){arrYear[n] = yearRel[n];}
+            mvprintw(7, 18, arrYear);
+            
+            mvprintw(9,1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
             refresh();
-            int stop = getch();
+            char output = getch();
+            while ( output!= 'z'&& output!= 'c' && output!= 'e'){
+                mvprintw(11, 1, "Enter a valid action: ");
+                refresh();
+                output = getch();
+            }
+            return output;
         }
 
         void addEntry(){
             mvprintw (1, 1, "You are currently: adding an entry. ");
-            mvprintw (1, 38, "Enter \"exit\" if you change your mind."); 
+            mvprintw (1, 37, "Enter \"exit\" if you change your mind."); 
             refresh();
 
             mvprintw (3, 1, "Enter the manga name: ");
@@ -893,41 +957,71 @@ class menu{
             
             char name [100];
             getstr(name);
-            if (name == "exit"){return;}
+            if (toLowerStr(name) == "exit"){return;}
+            else{
+                for (int pos = 0; pos < info->getMangaList().size(); pos++){
+                    if(info->getMangaList().at(pos).getName() == name){
+                        erase();
+                        mvprintw(1, 1, "Entry already exists. Returning to main menu");
+                        refresh();
+                        int stop = getch();
+                        return;
+                    }
+                }
+            }
 
             erase();
 
-            mvprintw (1, 1, "Enter the manga authors one at a time. " );
-            mvprintw (1, 39, "Enter \"stop\" to stop: ");
+            char entry [100];
             refresh();
 
-            char entry [100];
-            vector<string> authors;
+            vector<string> authors = {};
             while (true){
+                erase();
+                mvprintw (1, 1, "Enter the manga authors one at a time. " );
+                mvprintw (1, 39, " Enter \"stop\" to stop: ");
                 mvprintw (3, 1, "Enter an author: ");
                 refresh();
 
                 getstr (entry);
-                if (entry == "exit"){return;}
-                else if (toLowerStr(entry) == "stop"){break;}
-                authors.push_back(entry);
+                if (toLowerStr(entry) == "exit"){return;}
+                else if (toLowerStr(entry) == "stop"){
+                    if(authors.size() != 0){break;}
+                    else{
+                        erase();
+                        mvprintw(1,1,"Please enter an author. Press any key to continue.");
+                        refresh();
+                        char stop = getch();
+                    }
+                }
+                else{authors.push_back(entry);};
             }
 
-            erase();
-                    
-            mvprintw (1, 1, "Enter the manga genres one at a time. " );
-            mvprintw (1, 39, "Enter \"stop\" to stop: ");
+            erase();               
+            
             refresh();
 
-            vector<string> genres;
+            vector<string> genres = {};
             while (true){
+                erase();
+                mvprintw(1, 1, "Enter the manga genres one at a time. ");
+                mvprintw (1, 39, " Enter \"stop\" to stop: ");
                 mvprintw (3, 1, "Enter a genre: ");
                 refresh();
 
                 getstr (entry);
                 if (entry == "exit"){return;}
-                else if (toLowerStr(entry) == "stop"){break;}
-                genres.push_back(entry);}
+                else if (toLowerStr(entry) == "stop"){
+                    if(genres.size() != 0){break;}
+                    else{
+                        erase();
+                        mvprintw(1,1,"Please enter a genre. Press any key to continue");
+                        refresh();
+                        char stop = getch();
+                    }
+                }
+                else{genres.push_back(entry);}
+                }
             
             erase();
 
@@ -961,9 +1055,34 @@ class menu{
             }
 
             single_record newRecord (name, authors, genres, isReleasing, stoi(year));
-            info->add_entry (newRecord);
+            
+            erase();
+            mvprintw(1, 1, "Are you sure you want to add this entry? Press any key to continue.");
+            
+            char c = getch();
+            refresh();
 
-            mvprintw (1, 1, "You have successfully entered a new entry.");
+            erase();
+            newRecord.printEntry();
+            
+            erase();
+            mvprintw(1, 1, "Confirm (Y)es or (N)o");
+            int userResponse = getch();
+            while (userResponse != 'n' && userResponse != 'y'){
+                mvprintw(3, 1, "Your response is invalid, please try again: ");
+                refresh();
+                userResponse = getch();
+            }
+
+            erase();
+            if (userResponse == 'y'){
+                info->add_entry (newRecord);
+
+                mvprintw (1, 1, "You have successfully entered a new entry.");
+                refresh();
+            }
+            else{mvprintw(1,1, "You have cancelled entering an entry");}
+            erase();
             refresh();
         }
 
@@ -976,74 +1095,4 @@ class menu{
         database *info = new database("database.txt");
 };
 
-int main(){
-
-/*     // Testing reading file into memory
-    database mangaDatabase("database.txt");
-    //mangaDatabase.readFile("database.txt"); */
-
-/*     // Testing searching by exact string
-    single_record drStone = mangaDatabase.searchByName("Dr. Stone");
-    single_record koiToUtatane = mangaDatabase.searchByName("utatane");
-    single_record kanojoOkarishimasu = mangaDatabase.searchByName("okarishimasu");
-    single_record kanojoMoKanojo = mangaDatabase.searchByName("Kanojo mo kanojo");
-    
-    // Testing searching by year
-    vector<single_record> range2018 = mangaDatabase.searchByYear(2018);
-    // Testing searching by year range
-    vector<single_record> range2010to2015 = mangaDatabase.searchByYear(2010, 2015);
-    
-    // Testing deleting by name 
-    mangaDatabase.deleteByName("Dr. Stone");
-    mangaDatabase.deleteByName("utatane");
-    mangaDatabase.deleteByName("okarishimasu");
-    mangaDatabase.deleteByName("Kanojo mo kanojo");
-    
-    // Testing deleting by year
-    mangaDatabase.deleteByYear(2020);
-    // Testing deleting by year range
-    mangaDatabase.deleteByYear(2014, 2018);
-    
-    // Testing listing alphabetically
-    vector<single_record> listingAlphabetical = mangaDatabase.listAlphabetical();
-    // Testing listing reverse alphabetically
-    vector<single_record> listingReverseAlphabetical = mangaDatabase.listAlphabeticalReverse();
-    // Testing listing numerically
-    vector<single_record> listingNumerically = mangaDatabase.listNumerical();
-    // Testing listing reverse alphabetically
-    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse(); */
-
-/*     // Testing searching by exact string
-    single_record drStone = mangaDatabase.searchByName("bleach");
-    single_record koiToUtatane = mangaDatabase.searchByName("boku no hero academia");
-    single_record kanojoOkarishimasu = mangaDatabase.searchByName("one piece");
-    single_record kanojoMoKanojo = mangaDatabase.searchByName("demon slayer");
-    
-    // Testing searching by year
-    vector<single_record> range2018 = mangaDatabase.searchByYear(2022);
-    // Testing searching by year range
-    vector<single_record> range2010to2015 = mangaDatabase.searchByYear(1050, 2021);
-    
-    // Testing deleting by name 
-    mangaDatabase.deleteByName("bleach");
-    mangaDatabase.deleteByName("boku no hero academia");
-    mangaDatabase.deleteByName("one piece");
-    mangaDatabase.deleteByName("Demon slayer");
-    
-    // Testing deleting by year
-    mangaDatabase.deleteByYear(2022);
-    // Testing deleting by year range
-    mangaDatabase.deleteByYear(1953, 2018);
-    
-    // Testing listing alphabetically
-    vector<single_record> listingAlphabetical = mangaDatabase.listAlphabetical();
-    // Testing listing reverse alphabetically
-    vector<single_record> listingReverseAlphabetical = mangaDatabase.listAlphabeticalReverse();
-    // Testing listing numerically
-    vector<single_record> listingNumerically = mangaDatabase.listNumerical();
-    // Testing listing reverse alphabetically
-    vector<single_record> listingReverseNumerically = mangaDatabase.listNumericalReverse(); */
-
-    menu mangaMenu;
-
-}
+int main(){menu mangaMenu;}
