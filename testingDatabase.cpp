@@ -842,13 +842,16 @@ class menu{
 
             erase();
 
-            mvprintw (1, 1, "Enter the manga authors one at a time. " );
-            mvprintw (1, 39, "Enter \"stop\" to stop: ");
+            mvprintw (1, 1, "Enter the manga authors one at a time. ");
+            mvprintw (1, 40, "Enter \"stop\" to stop: ");
             refresh();
 
             char entry [100];
             vector<string> authors;
             while (true){
+                erase();
+                mvprintw (1, 1, "Enter the manga authors one at a time. " );
+                mvprintw (1, 40, "Enter \"stop\" to stop: ");
                 mvprintw (3, 1, "Enter an author: ");
                 refresh();
 
@@ -866,7 +869,9 @@ class menu{
 
             vector<string> genres;
             while (true){
-                // cout << "Enter a genre: \n";
+                erase();
+                mvprintw (1, 1, "Enter the manga genres one at a time. " );
+                mvprintw (1, 39, "Enter \"stop\" to stop: ");
                 mvprintw (3, 1, "Enter a genre: ");
                 refresh();
 
