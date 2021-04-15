@@ -20,11 +20,7 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#include "cmpt_error.h"
-#include "final.h"
-#include <iostream>
-//#include <ncurse>
-
+#include "menu.h"
 using namespace std;
 
-int main() {}
+int main() {menu database;}

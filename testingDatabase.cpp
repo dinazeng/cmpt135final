@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class single_record{
+class manga_record{
     public:
-        single_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
+        manga_record(string mangaName, vector<string> mangaAuthor, vector <string> mangaGenres, 
                       bool mangaStatus, int releaseYear): name(mangaName), authors(mangaAuthor),
                       genres(mangaGenres), isReleasing(mangaStatus), year(releaseYear){}
 
-        single_record(string mangaName, vector<string> mangaAuthor):
+        manga_record(string mangaName, vector<string> mangaAuthor):
             name(mangaName), authors(mangaAuthor){}
 
         //default constructor
-        single_record(){
+        manga_record(){
             name = "ERROR 404: NAME NOT FOUND";
         }
 
@@ -106,7 +106,7 @@ class single_record{
         void add_genre(string newGenre){genres.push_back(newGenre);}
         void add_author(string newAuthor){authors.push_back(newAuthor);}
 
-        ~single_record(){}
+        ~manga_record(){}
 
     private:
         string name = "";
@@ -152,10 +152,10 @@ class database {
             }
 
             // Read in each input (line) from the file
-            vector<single_record> mangaList;
+            vector<manga_record> mangaList;
             while (true){
                 string entry;
-                single_record manga;
+                manga_record manga;
                 getline(inFile, entry);
                 if (inFile.fail()){break;}
 
@@ -213,7 +213,7 @@ class database {
 
 /* -------------------------- Searching for records ------------------------- */
         // Searching by name
-        single_record searchByName (string name){
+        manga_record searchByName (string name){
             // The case where user enters in exact name of manga
             for (int i = 0; i < mangaList.size(); i++){
                 if (name == mangaList.at(i).getName()){return mangaList.at(i);}}
@@ -234,14 +234,14 @@ class database {
                 }
             }
             notFound();
-            single_record noRecord;
+            manga_record noRecord;
             return noRecord;
         }
         // Searching by exact year
-        vector<single_record> searchByYear (int year){
+        vector<manga_record> searchByYear (int year){
             // For each manga with matching year, append to searchResults and return at end
-            vector<single_record> searchResults;
-            for (single_record manga : mangaList){
+            vector<manga_record> searchResults;
+            for (manga_record manga : mangaList){
                 if (manga.getYear() == year){
                     searchResults.push_back(manga);
                 }
@@ -252,10 +252,10 @@ class database {
             return searchResults;
         }
         // Searching by year range
-        vector<single_record> searchByYear (int yearStart, int yearEnd){
+        vector<manga_record> searchByYear (int yearStart, int yearEnd){
             // For each manga within year range, append to searchResults and return at end
-            vector<single_record> searchResults;
-            for (single_record manga: mangaList){
+            vector<manga_record> searchResults;
+            for (manga_record manga: mangaList){
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);
                 }
@@ -334,8 +334,8 @@ class database {
         // Searching by exact year
         void deleteByYear (int year){
             // For each manga with matching year, append to searchResults and return at end
-            vector<single_record> searchResults;
-            for (single_record manga : mangaList){
+            vector<manga_record> searchResults;
+            for (manga_record manga : mangaList){
                 if (manga.getYear() == year){
                     searchResults.push_back(manga);
                 }
@@ -353,8 +353,8 @@ class database {
         // Searching by year range
         void deleteByYear (int yearStart, int yearEnd){
             // For each manga within year range, append to searchResults and return at end
-            vector<single_record> searchResults;
-            for (single_record manga: mangaList){
+            vector<manga_record> searchResults;
+            for (manga_record manga: mangaList){
                 if (manga.getYear() >= yearStart && manga.getYear() <= yearEnd){
                     searchResults.push_back(manga);
                 }
@@ -369,7 +369,7 @@ class database {
         }
 
         // Ask for confirmation on deleting record
-        bool deleteConfirmation (int index, single_record manga){
+        bool deleteConfirmation (int index, manga_record manga){
             // Use the parameter manga to display manga later once we have a function to do so
             initscr();
             mvprintw(1,1, "Are you sure you would like to delete: ");
@@ -390,7 +390,7 @@ class database {
             return false;
         }
 
-        void deleteConfirmationYear (vector<single_record> searchResults){
+        void deleteConfirmationYear (vector<manga_record> searchResults){
             initscr();
             mvprintw(1, 1, "Enter the entry # of the one you want to delete: ");
             refresh();
@@ -431,11 +431,11 @@ class database {
         }
 
 /* -------------- Listing records in multiple different orders -------------- */
-        vector<single_record> listAlphabetical(){
+        vector<manga_record> listAlphabetical(){
 
             // Using selection sort, sort the manga based on the first character of names
             int minIndex;
-            vector<single_record> alphaList = mangaList;
+            vector<manga_record> alphaList = mangaList;
 
             // Iteration for beginning index in unsorted section of alphabeticalList
             for (int i = 0; i < alphaList.size() - 1; i++){
@@ -456,15 +456,15 @@ class database {
             return alphaList;
         }
 
-        vector<single_record> listAlphabeticalReverse(){
+        vector<manga_record> listAlphabeticalReverse(){
             // Using selection sort, sort the manga based on the first character of names
-            vector<single_record> alphabeticalListReverse = listAlphabetical();
+            vector<manga_record> alphabeticalListReverse = listAlphabetical();
             reverse(alphabeticalListReverse.begin(), alphabeticalListReverse.end());
             return alphabeticalListReverse;
         }
 
-        vector<single_record> listNumerical(){
-            vector <single_record> numericalList = mangaList;
+        vector<manga_record> listNumerical(){
+            vector <manga_record> numericalList = mangaList;
             for (int start = 0; start < numericalList.size()-1; start++){
 		        int min = start;
 		        for (int check = start + 1; check < numericalList.size(); check++){
@@ -477,20 +477,20 @@ class database {
 	        return numericalList;   
         }
 
-        vector<single_record> listNumericalReverse(){
-            vector <single_record> numericalList = listNumerical();
+        vector<manga_record> listNumericalReverse(){
+            vector <manga_record> numericalList = listNumerical();
             reverse (numericalList.begin(), numericalList.end());
             return numericalList;
         }
 
         // Getters
-        vector<single_record> getMangaList() const{ return mangaList; };
+        vector<manga_record> getMangaList() const{ return mangaList; };
 
         //Modify the vector
-        void add_entry (single_record newEntry){mangaList.push_back(newEntry);}
+        void add_entry (manga_record newEntry){mangaList.push_back(newEntry);}
         
         // Displaying a manga's information
-        void displayInformation(int index, single_record manga){
+        void displayInformation(int index, manga_record manga){
             initscr();
             erase();
             refresh();
@@ -572,7 +572,7 @@ class database {
         ~database(){}
 
     private:
-        vector<single_record> mangaList = {};
+        vector<manga_record> mangaList = {};
 };
 
 class menu{
@@ -799,9 +799,9 @@ class menu{
                     ofstream dataFile("database.txt");
                     //adds elements to the file
                     string returnStr = "";
-                    vector <single_record> file = info->getMangaList();
+                    vector <manga_record> file = info->getMangaList();
                     for (int pos = 0; pos < file.size(); pos++){
-                        single_record record = file.at(pos);
+                        manga_record record = file.at(pos);
                         //add name
                         returnStr = record.getName() + "|{";
                         //add genres
@@ -824,6 +824,10 @@ class menu{
                         dataFile << returnStr << endl;
                     }
                     dataFile.close();
+                }
+                else {
+                    mvprintw(1,1, "Please enter a valid option. Press any key to continue.");
+                    char stop = getch();
                 }
             }
         }
@@ -864,7 +868,7 @@ class menu{
         }
 
          //prints all elements in a vector
-        void printDatabase(vector <single_record> mangaList){
+        void printDatabase(vector <manga_record> mangaList){
             char input = '0';
             int loc = 0;
             while (input != 'e'){
@@ -878,9 +882,9 @@ class menu{
             }
         }
 
-        char printEntry(int index, vector <single_record> mangaList){
+        char printEntry(int index, vector <manga_record> mangaList){
             erase();
-            single_record manga = mangaList.at(index);
+            manga_record manga = mangaList.at(index);
             mvprintw(1, 1, "Entry #");
             char entry[to_string(index).length()];
             for (int n = 0; n < 3; n++){entry[n] = to_string(index +1)[n];}
@@ -1049,12 +1053,13 @@ class menu{
 
             char year [10];
             getstr(year);
-            while (!realNum (year)){
+            while (!realNum (year)|| year == "exit"){
+                if (year == "exit"){return;}
                 mvprintw(2, 1, "That is not a valid year, please try again: ");
                 getstr(year);
             }
 
-            single_record newRecord (name, authors, genres, isReleasing, stoi(year));
+            manga_record newRecord (name, authors, genres, isReleasing, stoi(year));
             
             erase();
             mvprintw(1, 1, "Are you sure you want to add this entry? Press any key to continue.");

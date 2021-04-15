@@ -1,9 +1,8 @@
 //menu class
-#include "cmpt_error.h"
-#include "database.h"
-#include "record.h"
+
 #include "menu.h"
-#include <iostream>
+#include "database.h"
+#include "manga_record.h"
 #include <vector>
 #include <string>
 #include <ncurses.h>
@@ -13,210 +12,256 @@ class menu{
     public:
         //default and only constructor
         menu(){
-            cout << "Welcome to the Manga Database!\n-----------------------------\n";
+            initscr();
+            mvprintw(1,1, "Welcome to the Manga Database!\n---------------------------------");
+            char stop = getch();
             //continues until user selects quit
-            while (response != "q"){
+            while (response != 'q'){
+                erase();
+                refresh();
                 printMenu();
                 //adding a manga into the database
-                if (response == "a"){
+                if (response == 'a'){
                     addEntry();
                 }
                 //finding a manga by its name or year of release in the database
-                else if (response == "f"){
-                    cout << "You are currently: finding an entry.\n"
-                         << "\nYou can search by:\n"
-                         << "(N)ame of manga\n"
-                         << "(Y)ear of release\n"
-                         << "\n(R)eturn to main menu\n"
-                         << "\nEnter the letter of your choice:";
+                else if (response == 'f'){
+                    mvprintw(1, 1, "You are currently: finding an entry.");
+                    mvprintw(3, 1, "You can search by:"); 
+                    mvprintw(5, 1, "(N)ame of manga");
+                    mvprintw(6, 1, "(Y)ear of release");
+                    mvprintw(8, 1, "(R)eturn to main menu");   
+                    mvprintw(10, 1,"Enter the letter of your choice:");
                     
-                    string userResponse;
-                    cin >> userResponse;
-                    userResponse = toLowerStr(userResponse);
-                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
-                        cout << "Your response is invalid, please try again: ";
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);}
+                    refresh();
+                    
+                    int userResponse = getch();
+                    while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
+                        mvprintw(11, 1, "Your response is invalid, please try again: ");
+                        refresh();
+                        userResponse = getch();
+                    }
 
-                    if(userResponse == "n"){
-                        cout << "Enter the name of the manga you are searching for:";
-                        string mangaName;
-                        cin.ignore();
-                        getline (cin, mangaName);
+                    erase();
+                    refresh(); 
+
+                    if(userResponse == 'n'){
+                        mvprintw(1, 1, "Enter the name of the manga you are searching for: ");
+                        char mangaName [100];
+                        getstr(mangaName);
+                        erase();
                         if (info->searchByName(mangaName).getName()!= "ERROR 404: NAME NOT FOUND"){ 
-                            info->searchByName(mangaName).printEntry();}
+                            info->searchByName(mangaName).printEntry();
+                            erase();
+                            refresh();
                         }
+                    }
 
-                    else if (userResponse == "y"){
-                        cout << "Are you searching for a (S)pecific year or a (R)ange:";
-                        string userResponse;
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);
-                        while (userResponse != "s" && userResponse != "r"){
-                            cout << "Your response is invalid, please try again: ";
-                            cin >> userResponse;
-                            userResponse = toLowerStr(userResponse);}
+                    else if (userResponse == 'y'){
+                        mvprintw(1, 1, "Are you searching for a (S)pecific year or a (R)ange:");
+                       userResponse = getch();
+                        while (userResponse != 's' && userResponse != 'r'){
+                            mvprintw(2, 1, "Your response is invalid, please try again: ");
+                            userResponse = getch();
+                        }
                         
-                        if (userResponse == "s"){
-                            cout << "What year are you looking for? ";
-                            string year;
-                            cin >> year;
+                        if (userResponse == 's'){
+                            erase();
+                            mvprintw(1, 1, "What year are you looking for? ");
+                            char year [10];
+                            getstr(year);
                             while (!realNum (year)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> year;}
-                            printDatabase(info->searchByYear(stoi(year)));}
+                                mvprintw(2, 1, "That is not a valid year, please try again: ");
+                                getstr(year);
+                            }
+                            printDatabase(info->searchByYear(stoi(year)));
+                            erase();
+                            refresh();
+                        }
                         
                         else{
-                            string startYear;
-                            string endYear;
-                            cout << "Enter the starting year: ";
-                            cin >> startYear;
+                            erase();
+                            char startYear[10];
+                            char endYear [10];
+                            mvprintw(1, 1, "Enter the starting year: ");
+                            getstr(startYear);
                             while (!realNum (startYear)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> startYear;}
-                            cout << "Enter the ending year: ";
-                            cin >> endYear;
+                                mvprintw(2, 1, "That is not a valid year, please try again: ");
+                                getstr(startYear);
+                            }
+                            mvprintw(4, 1, "Enter the ending year: ");
+                            getstr(endYear);
                             while (!realNum (endYear)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> endYear;}
-                            printDatabase(info -> searchByYear(stoi(startYear), stoi(endYear)));}
+                                mvprintw(5, 1, "That is not a valid year, please try again: ");
+                                getstr(endYear);}
+                            printDatabase(info -> searchByYear(stoi(startYear), stoi(endYear)));
+                            erase();
+                            refresh();
+                        }
                     }
                 }
                 //delete a manga by its name or year of release in the database
-                else if (response == "d"){
-                    cout << "You are currently: deleting an entry.\n"
-                         << "\nYou can delete by:\n"
-                         << "(N)ame of manga\n"
-                         << "(Y)ear of release\n"
-                         << "\n(R)eturn to main menu\n"
-                         << "\nEnter the letter of your choice:";
+                else if (response == 'd'){
+                    mvprintw(1, 1, "You are currently: deleting an entry.");
+                    mvprintw(3, 1, "You can delete by: ");
+                    mvprintw(5, 1, "(N)ame of manga");
+                    mvprintw(6, 1, "(Y)ear of release");
+                    mvprintw(8, 1, "(R)eturn to main menu");
+                    mvprintw(10, 1, "Enter the letter of your choice: ");
+                    refresh();
                     
-                    string userResponse;
-                    cin >> userResponse;
-                    userResponse = toLowerStr(userResponse);
-                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
-                        cout << "Your response is invalid, please try again: ";
-                        cin.ignore();
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);}
+                    char userResponse = getch();
+                    while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
+                        mvprintw(12, 1, "Your response is invalid, please try again: ");
+                        refresh();
+                        userResponse = getch();
+                    }
+                    
+                    erase();
+                    refresh();
 
-                    if(userResponse == "n"){
-                        cout << "Enter the name of the manga you are deleting:";
-                        string mangaName;
-                        cin.ignore();
-                        getline (cin, mangaName);
-                        info-> deleteByName(mangaName);}
+                    if(userResponse == 'n'){
+                        mvprintw(1, 1, "Enter the name of the manga you are deleting: ");
+                        refresh();
+                        char mangaName[100];
+                        getstr(mangaName);
+                        erase();
+                        info-> deleteByName(mangaName);
+                    }
 
-                    else if (userResponse == "y"){
-                        cout << "Are you deleting a (S)pecific year or a (R)ange:";
-                        string userResponse;
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);
-                        while (userResponse != "s" && userResponse != "r"){
-                            cout << "Your response is invalid, please try again: ";
-                            cin >> userResponse;
-                            userResponse = toLowerStr(userResponse);}
-                        
-                        if (userResponse == "s"){
-                            cout << "What year are you deleting? ";
-                            string year;
-                            cin >> year;
+                    else if (userResponse == 'y'){
+                        mvprintw(1, 1, "Are you deleting a (S)pecific year or a (R)ange: ");
+                        refresh();
+
+                        char userResponse = getch();
+                        while (userResponse != 's' && userResponse != 'r'){
+                            mvprintw(2, 1, "Your response is invalid, please try again: ");
+                            refresh();
+                            userResponse = getch();
+                        }
+
+                        if (userResponse == 's'){
+                            erase();
+                            mvprintw(1, 1, "What year are you looking for? ");
+                            refresh();
+                            char year [10];
+                            getstr(year);
                             while (!realNum (year)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> year;}
-                            info->deleteByYear(stoi(year));}
+                                mvprintw(2, 1, "That is not a valid year, please try again: ");
+                                getstr(year);
+                            }
+                            info->deleteByYear(stoi(year));
+                        }
                         
                         else{
-                            string startYear;
-                            string endYear;
-                            cout << "Enter the starting year: ";
-                            cin >> startYear;
+                            erase();
+                            char startYear[10];
+                            char endYear [10];
+                            mvprintw(1, 1, "Enter the starting year: ");
+                            getstr(startYear);
                             while (!realNum (startYear)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> startYear;}
-                            cout << "Enter the ending year: ";
-                            cin >> endYear;
+                                mvprintw(2, 1, "That is not a valid year, please try again: ");
+                                getstr(startYear);
+                            }
+                            mvprintw(4, 1, "Enter the starting year: ");
+                            getstr(endYear);
                             while (!realNum (endYear)){
-                                cout << "That is not a valid year, please try again: ";
-                                cin >> endYear;}
-                            info -> deleteByYear(stoi(startYear), stoi(endYear));}
+                                mvprintw(5, 1, "That is not a valid year, please try again: ");
+                                getstr(endYear);}
+                            info -> deleteByYear(stoi(startYear), stoi(endYear));
+                        }
                     }
                 }
                 //list the database by alphatical order or numerical order
-                else if (response == "l"){
-                    cout << "You are currently: listing entries.\n"
-                         << "\nYou can list by:\n"
-                         << "(N)ame of manga\n"
-                         << "(Y)ear of release\n"
-                         << "\n(R)eturn to main menu\n"
-                         << "\nEnter the letter of your choice:";
+                else if (response == 'l'){
+                    mvprintw(1, 1, "You are currently: listing entries.");
+                    mvprintw(3, 1, "You can list by: ");
+                    mvprintw(5, 1, "(N)ame of manga");
+                    mvprintw(6, 1, "(Y)ear of release");
+                    mvprintw(8, 1, "(R)eturn to main menu");
+                    mvprintw(10, 1, "Enter the letter of your choice: ");
+                    refresh();
                     
-                    string userResponse;
-                    cin >> userResponse;
-                    userResponse = toLowerStr(userResponse);
-                    while (userResponse != "n" && userResponse != "y"&& userResponse != "r"){
-                        cout << "Your response is invalid, please try again: ";
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);}
+                    int userResponse = getch();
+                    while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
+                        mvprintw(11, 1, "Your response is invalid, please try again: ");
+                        refresh();
+                        userResponse = getch();
+                    }
 
-                    if(userResponse == "n"){
-                        cout << "Did you want them listed in (A)lphabetical order or" 
-                             << " in (R)everse alphabetical order?: ";
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);
-                        while (userResponse != "a" && userResponse != "r"){
-                            cout << "Your response is invalid, please try again: ";
-                            cin >> userResponse;
-                            userResponse = toLowerStr(userResponse);}
+                    erase();
+
+                    if(userResponse == 'n'){
+                        mvprintw(1,1, "Did you want them listed in (A)lphabetical order or"); 
+                        mvprintw(1, 52, " in (R)everse alphabetical order?: ");   
+                        refresh();
                         
-                        if (userResponse == "a"){printDatabase(info->listAlphabetical());}
+                        char userResponse = getch();
+                        while (userResponse != 'a' && userResponse != 'r'){
+                            mvprintw(2, 1, "Your response is invalid, please try again: ");
+                            refresh();
+                            userResponse = getch();
+                        }
+                        
+                        if (userResponse == 'a'){printDatabase(info->listAlphabetical());}
                         else {printDatabase(info->listAlphabeticalReverse());}
                     }
 
-                    else if (userResponse == "y"){
-                        cout << "Did you want them listed in (A)scending order or" 
-                             << " in (D)escending order?: ";
-                        cin >> userResponse;
-                        userResponse = toLowerStr(userResponse);
-                        while (userResponse != "a" && userResponse != "d"){
-                            cout << "Your response is invalid, please try again: ";
-                            cin >> userResponse;
-                            userResponse = toLowerStr(userResponse);}
+                    else if (userResponse == 'y'){
+                        mvprintw(1, 1, "Did you want them listed in (A)scending order or");
+                        mvprintw(1, 49, " in (D)escending order?: ");
+                        refresh();
+
+                        char userResponse = getch();
+                        while (userResponse != 'a' && userResponse != 'd'){
+                            mvprintw(2, 1, "Your response is invalid, please try again: ");
+                            refresh();
+                            userResponse = getch();
+                        }
                         
-                      if (userResponse == "a"){printDatabase(info->listNumerical());}
+                        if (userResponse == 'a'){printDatabase(info->listNumerical());}
                         else {printDatabase(info->listNumericalReverse());}
                     }
                 } 
                 //stops the program
-                else if (response == "q"){
-                   cout << "Have a great day!!\n";
+                else if (response == 'q'){
+                    mvprintw(1,1, "Have a great day!!");
+                    char stop = getch();
+                    endwin();
                     //creates a text file of the database
                     ofstream dataFile("database.txt");
                     //adds elements to the file
                     string returnStr = "";
-                    vector <single_record> file = info->getMangaList();
+                    vector <manga_record> file = info->getMangaList();
                     for (int pos = 0; pos < file.size(); pos++){
-                        single_record record = file.at(pos);
+                        manga_record record = file.at(pos);
                         //add name
                         returnStr = record.getName() + "|{";
                         //add genres
                         for (int gen = 0; gen < record.getGenres().size() - 1; gen++){
                             returnStr += record.getGenres().at(gen) + ", ";}
-                        returnStr += record.getGenres().at(record.getGenres().size()-1) + "}|{";
+                        if (record.getGenres().size() > 0){
+                            returnStr += record.getGenres().at(record.getGenres().size()-1);}
+                        returnStr += "}|{";
                         //add authors
                         for (int loc = 0; loc < record.getAuthors().size() - 1; loc++){
                             returnStr += record.getAuthors().at(loc) + ", ";}
-                        returnStr += record.getAuthors().at(record.getAuthors().size()-1) + "}|";
+                        if (record.getAuthors().size() > 0){
+                            returnStr += record.getAuthors().at(record.getAuthors().size()-1);
+                        }
+                        returnStr += "}|";
                         //add status and year
-                        if(record.getStatus()){returnStr += "releasing|" + to_string(record.getYear());}
+                        if(record.getStatus()){
+                            returnStr += "releasing|" + to_string(record.getYear());}
                         else {returnStr += "completed|" + to_string(record.getYear());}
                         dataFile << returnStr << endl;
                     }
-
                     dataFile.close();
                 }
-                //if the case where the user does not respond correctly
-                else{cout << "Sorry, Your response is invalid, please try again: ";}
+                else {
+                    mvprintw(1,1, "Please enter a valid option. Press any key to continue.");
+                    char stop = getch();
+                }
             }
         }
 
@@ -232,17 +277,19 @@ class menu{
 
         //prints the available choices in menu
         void printMenu(){
-            initscr();
-            
-            mvprintw(10, 1, "Main Menu: ");
-            mvprintw(12, 1, "(A)dd a manga.");
-            mvprintw(13, 1, "(D)elete a manga.");
-            mvprintw(14, 1, "(L)ist mangas.");
-            mvprintw(15, 1, "(Q)uit.");
-            mvprintw(17, 1, "Enter the letter of your choice: ");
+            mvprintw(0, 1, "Main Menu: ");
+            mvprintw(2, 1, "(A)dd a manga.");
+            mvprintw(3, 1, "(F)ind a manga");
+            mvprintw(4, 1, "(D)elete a manga.");
+            mvprintw(5, 1, "(L)ist mangas.");
+            mvprintw(6, 1, "(Q)uit.");
+            mvprintw(8, 1, "Enter the letter of your choice: ");
             refresh();
 
             response = getch();
+            move(0,0);
+            erase();
+            refresh();
         }
         
         //changes all characters in a string to lower case
@@ -253,90 +300,234 @@ class menu{
             return returnStr;
         }
 
-        //prints all elements in a vector
-        void printDatabase(vector <single_record> mangaList){
-            for (int pos = 0; pos < mangaList.size(); pos ++){
-                cout << "Entry #" << pos + 1 << endl;
-                cout << "=========================================" << endl;
-                cout << "Name: " << mangaList.at(pos).getName() << "." << endl;
-
-                cout << "Genres: ";
-                vector<string> genres = mangaList.at(pos).getGenres();
-                for (int i = 0; i < genres.size() - 1; i++){cout << genres.at(i) << ", ";}
-                cout << genres.at(genres.size() - 1) << "." << endl;
-
-                cout << "Authors: ";
-                vector<string> authors = mangaList.at(pos).getAuthors();
-                for (int i = 0; i < authors.size() - 1; i++){cout << authors.at(i) << ", ";}
-                cout << authors.at(authors.size() - 1) << "." << endl;
-
-                cout << "Status: ";
-                if (mangaList.at(pos).getStatus() == true){cout << "Releasing." << endl;}
-                else {cout << "Completed." << endl;}
-
-                cout << "Year of release: " << mangaList.at(pos).getYear() << "." << endl << endl;
+         //prints all elements in a vector
+        void printDatabase(vector <manga_record> mangaList){
+            char input = '0';
+            int loc = 0;
+            while (input != 'e'){
+                input = printEntry(loc, mangaList);
+                if (input == 'c'){
+                    if (loc != mangaList.size() - 1){loc++;}
+                }
+                else if (input == 'z' ){
+                    if (loc != 0){loc--;}
+                }
             }
         }
 
-        //adds an entry
-        void addEntry(){
-            cout << "You are currently: adding an entry. Enter \"exit\" if you change your mind.";
+        //print a single entry
+        char printEntry(int index, vector <manga_record> mangaList){
+            erase();
+            manga_record manga = mangaList.at(index);
+            mvprintw(1, 1, "Entry #");
+            char entry[to_string(index).length()];
+            for (int n = 0; n < 3; n++){entry[n] = to_string(index +1)[n];}
+            mvprintw(1, 8, entry);
 
-            cout << "\n\nEnter the manga name\n";
-            string name;
-            cin.ignore();
-            getline (cin, name);
-            if (name == "exit"){return;}
+            mvprintw(2, 1,"=========================================");
+                
+            mvprintw(3, 1, "Name: ");
+            char nameArr[manga.getName().length()];                
+            for (int n = 0; n < manga.getName().length(); n++){nameArr[n] = manga.getName()[n];}
+            mvprintw(3, 7, nameArr);
+            mvprintw(3, manga.getName().length() + 7, ".");
 
-            cout << "Enter the manga authors one at a time. Enter \"stop\" to stop: ";
-            string entry = "";
-            vector<string> authors;
-            while (true){
-                cout << "Enter an author: \n";
-                getline (cin, entry);
-                if (entry == "exit"){return;}
-                else if (toLowerStr(entry) == "stop"){break;}
-                authors.push_back(entry);}
-                    
-            cout << "Enter the manga genres one at a time. Enter \"stop\" to stop: ";
-            vector<string> genres;
-            while (true){
-                cout << "Enter a genre: \n";
-                getline (cin, entry);
-                if (entry == "exit"){return;}
-                else if (toLowerStr(entry) == "stop"){break;}
-                genres.push_back(entry);}
+            mvprintw(4, 1, "Genres: ");
+            int rowPos = 9;
+            for (int i = 0; i < manga.getGenres().size() - 1; i++){
+                char arr[manga.getGenres().at(i).length()];
+                for (int n = 0; n < manga.getGenres().at(i).length(); n++){
+                    arr[n] = manga.getGenres().at(i)[n];}
+                mvprintw(4, rowPos, arr);
+                mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
+                rowPos += manga.getGenres().at(i).length() + 2;
+            }
+            char arrGen[manga.getGenres().at(manga.getGenres().size() - 1).length()];
+            for (int n = 0; n < manga.getGenres().at(manga.getGenres().size() - 1).length(); n++){
+                arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];}
+            mvprintw(4, rowPos, arrGen);
+            mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+                
+            mvprintw(5, 1, "Authors: ");
+            rowPos = 10;
+            for (int i = 0; i < manga.getAuthors().size() - 1; i++){
+                char arrAu[manga.getAuthors().at(i).length()];
+                for (int n = 0; n < manga.getAuthors().at(i).length(); n++){
+                    arrAu[n] = manga.getAuthors().at(i)[n];}
+                mvprintw(5, rowPos, arrAu);
+                mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
+                rowPos += manga.getAuthors().at(i).length() + 2;
+            }
+            char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
+            for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size()-1).length(); n++){
+                arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];}
+            mvprintw(5, rowPos, arrAu);
+            mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
-            bool isReleasing;
-            while (true){
-                cout << "Is this manga still releasing ? enter (Y)es or (N)o: ";
-                cin >> entry;
-                if (entry == "exit"){return;}
-                if (toLowerStr (entry) == "y"){
-                    isReleasing = true;
-                    break;}
-                else if (toLowerStr (entry) == "n"){
-                    isReleasing = false;
-                    break;}}
+            mvprintw(6, 1,"Status: ");
+            if (manga.getStatus() == true){mvprintw(6, 9,"Releasing.");}
+            else {mvprintw(6, 9,"Completed.");}
 
-            cout << "Enter the manga year of release\n";
-            string year;
-            cin >> year;
-            while (!realNum (year)){
-                if (year == "exit"){return;}
-                cout << "That is not a valid year, please try again: ";
-                cin >> year;}
-
-            single_record newRecord (name, authors, genres, isReleasing, stoi(year));
-            info->add_entry (newRecord);
-
-            cout << "You have successfully entered a new entry.\n";
+            mvprintw(7, 1, "Year of release: ");
+            string yearRel = to_string(manga.getYear());
+            char arrYear[4];
+            for (int n = 0; n < 4; n++){arrYear[n] = yearRel[n];}
+            mvprintw(7, 18, arrYear);
+            
+            mvprintw(9,1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
+            refresh();
+            char output = getch();
+            while ( output!= 'z'&& output!= 'c' && output!= 'e'){
+                mvprintw(11, 1, "Enter a valid action: ");
+                refresh();
+                output = getch();
+            }
+            return output;
         }
 
-        ~menu(){
-            delete info;}
+        void addEntry(){
+            mvprintw (1, 1, "You are currently: adding an entry. ");
+            mvprintw (1, 37, "Enter \"exit\" if you change your mind."); 
+            refresh();
+
+            mvprintw (3, 1, "Enter the manga name: ");
+            refresh();
+            
+            char name [100];
+            getstr(name);
+            if (toLowerStr(name) == "exit"){return;}
+            else{
+                for (int pos = 0; pos < info->getMangaList().size(); pos++){
+                    if(info->getMangaList().at(pos).getName() == name){
+                        erase();
+                        mvprintw(1, 1, "Entry already exists. Returning to main menu");
+                        refresh();
+                        int stop = getch();
+                        return;
+                    }
+                }
+            }
+
+            erase();
+
+            char entry [100];
+            refresh();
+
+            vector<string> authors = {};
+            while (true){
+                erase();
+                mvprintw (1, 1, "Enter the manga authors one at a time. " );
+                mvprintw (1, 39, " Enter \"stop\" to stop: ");
+                mvprintw (3, 1, "Enter an author: ");
+                refresh();
+
+                getstr (entry);
+                if (toLowerStr(entry) == "exit"){return;}
+                else if (toLowerStr(entry) == "stop"){
+                    if(authors.size() != 0){break;}
+                    else{
+                        erase();
+                        mvprintw(1,1,"Please enter an author. Press any key to continue.");
+                        refresh();
+                        char stop = getch();
+                    }
+                }
+                else{authors.push_back(entry);};
+            }
+
+            erase();               
+            
+            refresh();
+
+            vector<string> genres = {};
+            while (true){
+                erase();
+                mvprintw(1, 1, "Enter the manga genres one at a time. ");
+                mvprintw (1, 39, " Enter \"stop\" to stop: ");
+                mvprintw (3, 1, "Enter a genre: ");
+                refresh();
+
+                getstr (entry);
+                if (entry == "exit"){return;}
+                else if (toLowerStr(entry) == "stop"){
+                    if(genres.size() != 0){break;}
+                    else{
+                        erase();
+                        mvprintw(1,1,"Please enter a genre. Press any key to continue");
+                        refresh();
+                        char stop = getch();
+                    }
+                }
+                else{genres.push_back(entry);}
+                }
+            
+            erase();
+
+            bool isReleasing;
+            mvprintw (1, 1, "Is this manga still releasing? ");
+            mvprintw (1, 32,"Enter (Y)es or (N)o or (E) to exit: ");
+                                        
+            refresh();
+
+            char res = getch();
+            while (res != 'n' && res != 'y' && res != 'e'){
+                mvprintw(3, 1, "Your response is invalid, please try again: ");
+                refresh();
+                res = getch();
+            }
+
+            if (res == 'e'){return;}
+            if (res == 'y'){isReleasing = true;}
+            else if (res == 'n'){isReleasing = false;}
+
+            erase();
+
+            mvprintw (1, 1, "Enter the manga year of release: ");
+            refresh();
+
+            char year [10];
+            getstr(year);
+            while (!realNum (year)|| year == "exit"){
+                if (year == "exit"){return;}
+                mvprintw(2, 1, "That is not a valid year, please try again: ");
+                getstr(year);
+            }
+
+            manga_record newRecord (name, authors, genres, isReleasing, stoi(year));
+            
+            erase();
+            mvprintw(1, 1, "Are you sure you want to add this entry? Press any key to continue.");
+            
+            char c = getch();
+            refresh();
+
+            erase();
+            newRecord.printEntry();
+            
+            erase();
+            mvprintw(1, 1, "Confirm (Y)es or (N)o");
+            int userResponse = getch();
+            while (userResponse != 'n' && userResponse != 'y'){
+                mvprintw(3, 1, "Your response is invalid, please try again: ");
+                refresh();
+                userResponse = getch();
+            }
+
+            erase();
+            if (userResponse == 'y'){
+                info->add_entry (newRecord);
+
+                mvprintw (1, 1, "You have successfully entered a new entry.");
+                refresh();
+            }
+            else{mvprintw(1,1, "You have cancelled entering an entry");}
+            erase();
+            refresh();
+        }
+
+        ~menu(){delete info;}
     
     private:
-        string response = "";
+        char response;
         database *info = new database("database.txt");
 };

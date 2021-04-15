@@ -1,5 +1,7 @@
 //menu class
-#include "database.h"
+#ifndef MENU_H
+#define MENU_H
+
 #include <iostream>
 using namespace std;
 
@@ -18,7 +20,10 @@ class menu{
         string toLowerStr (string str);
 
         //prints all elements in a vector
-        void printDatabase(vector <single_record> mangaList);
+        void printDatabase(vector <manga_record> mangaList);
+
+        //print a single entry
+        char printEntry(int index, vector <manga_record> mangaList);
 
         //adds an entry
         void addEntry();
@@ -27,5 +32,7 @@ class menu{
         
     private:
         string response;
-        database *info = new database("database.txt");
+        database *info;
 };
+
+#endif

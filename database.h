@@ -1,5 +1,9 @@
+//database class
+
+#ifndef DATABASE_H
+#define DATABASE_H
+
 #include "cmpt_error.h"
-#include "record.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,11 +21,11 @@ class database {
 
 /* -------------------------- Searching for records ------------------------- */
         // Searching by name
-        single_record searchByName (string name);
+        manga_record searchByName (string name);
         // Searching by exact year
-        vector<single_record> searchByYear (int year);
+        vector<manga_record> searchByYear (int year);
         // Searching by year range
-        vector<single_record> searchByYear (int yearStart, int yearEnd);
+        vector<manga_record> searchByYear (int yearStart, int yearEnd);
 
 /* ------------------- Searching for and deleting records ------------------- */
         // Searching by name
@@ -30,28 +34,30 @@ class database {
         void deleteByYear (int year);
         // Searching by year range
         void deleteByYear (int yearStart, int yearEnd);
-
-        bool realNum (string userInput, int end);
         
         // Ask for confirmation on deleting record
-        bool deleteConfirmation(single_record manga);
-        void deleteConfirmationYear (vector<single_record> searchResults);
+        bool deleteConfirmation(manga_record manga);
+        void deleteConfirmationYear (vector<manga_record> searchResults);
 
-        vector<single_record> listAlphabetical();       
-        vector<single_record> listAlphabeticalReverse();
+        bool realNum (string userInput, int end);
 
-        vector<single_record> listNumerical();
-        vector<single_record> listNumericalReverse();
+        vector<manga_record> listAlphabetical();       
+        vector<manga_record> listAlphabeticalReverse();
+
+        vector<manga_record> listNumerical();
+        vector<manga_record> listNumericalReverse();
 
 
         // Getters
-        vector<single_record> getMangaList() const;
+        vector<manga_record> getMangaList() const;
 
         //Modify the vector
-        void add_entry (single_record newEntry);
+        void add_entry (manga_record newEntry);
 
         // Displaying a manga's information
-        void displayInformation(int index, single_record manga);
+        void displayInformation(int index, manga_record manga);
+
+        void notFound();
 
         // Deconstructor
         ~database();
@@ -59,5 +65,7 @@ class database {
 
 
     private:
-        vector<single_record> mangaList = {};
+        vector<manga_record> mangaList = {};
 };
+
+#endif
