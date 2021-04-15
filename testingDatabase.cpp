@@ -48,7 +48,7 @@ class single_record{
                 
             mvprintw(3, 1, "Name: ");
             char nameArr[name.length()];                
-            for (int n = 0; n < name.length(); n++){nameArr[n] = name[n];}
+            for (int n = 0; n < name.length(); n++){nameArr[n] = name.at(n);}
             mvprintw(3, 6, nameArr);
             mvprintw(3, name.length() + 6, ".");
 
@@ -56,7 +56,7 @@ class single_record{
             int rowPos = 9;
             for (int i = 0; i < genres.size() - 1; i++){
                 char arr[genres.at(i).length()];
-                for (int n = 0; n < genres.at(i).length(); n++){arr[n] = genres.at(i)[n];}
+                for (int n = 0; n < genres.at(i).length(); n++){arr[n] = genres.at(i).at(n);}
                 mvprintw(4, rowPos, arr);
                 mvprintw(4, rowPos + genres.at(i).length(), ", ");
                 rowPos += genres.at(i).length() + 2;
@@ -71,7 +71,7 @@ class single_record{
             rowPos = 10;
             for (int i = 0; i < authors.size() - 1; i++){
                 char arrAu[authors.at(i).length()];
-                for (int n = 0; n < authors.at(i).length(); n++){arrAu[n] = authors.at(i)[n];}
+                for (int n = 0; n < authors.at(i).length(); n++){arrAu[n] = authors.at(i).at(n);}
                 mvprintw(5, rowPos, arrAu);
                 mvprintw(5, rowPos + authors.at(i).length(), ", ");
                 rowPos += authors.at(i).length() + 2;
@@ -89,7 +89,7 @@ class single_record{
             mvprintw(7, 1, "Year of release: ");
             string yearRel = to_string(year);
             char arrYear[4];
-            for (int n = 0; n < 4; n++){arrYear[n] = yearRel[n];}
+            for (int n = 0; n < 4; n++){arrYear[n] = yearRel.at(n);}
             mvprintw(7, 18, arrYear);
             
             refresh();
@@ -778,16 +778,16 @@ class menu{
                 mvprintw(pos*9 + 3, 1, "Name: ");
                 string name = mangaList.at(pos).getName();
                 char nameArr[name.length()];
-                for (int n = 0; n < name.length(); n++){nameArr[n] = name[n];}
-                mvprintw(pos*9 + 3, 6, nameArr);
-                mvprintw(pos*9 + 3, mangaList.at(pos).getName().length() + 6, ".");
+                for (int n = 0; n < name.length(); n++){nameArr[n] = name.at(n);}
+                mvprintw(pos*9 + 3, 7, nameArr);
+                mvprintw(pos*9 + 3, mangaList.at(pos).getName().length() + 7, ".");
 
                 mvprintw(pos*9 + 4, 1, "Genres: ");
                 vector<string> genres = mangaList.at(pos).getGenres();
                 int rowPos = 9;
                 for (int i = 0; i < genres.size() - 1; i++){
                     char arr[genres.at(i).length()];
-                    for (int n = 0; n < genres.at(i).length(); n++){arr[n] = genres.at(i)[n];}
+                    for (int n = 0; n < genres.at(i).length(); n++){arr[n] = genres.at(i).at(n);}
                     mvprintw(pos*9 + 4, rowPos, arr);
                     mvprintw(pos*9 + 4, rowPos + genres.at(i).length(), ", ");
                     rowPos += genres.at(i).length() + 2;
@@ -803,7 +803,7 @@ class menu{
                 vector<string> authors = mangaList.at(pos).getAuthors();
                 for (int i = 0; i < authors.size() - 1; i++){
                     char arrAu[authors.at(i).length()];
-                    for (int n = 0; n < authors.at(i).length(); n++){arrAu[n] = authors.at(i)[n];}
+                    for (int n = 0; n < authors.at(i).length(); n++){arrAu[n] = authors.at(i).at(n);}
                     mvprintw(pos*9 + 5, rowPos, arrAu);
                     mvprintw(pos*9 + 5, rowPos + authors.at(i).length(), ", ");
                     rowPos += authors.at(i).length() + 2;
@@ -822,7 +822,9 @@ class menu{
                 string year = to_string(mangaList.at(pos).getYear());
                 char arrYear[4];
                 for (int n = 0; n < 4; n++){arrYear[n] = year[n];}
-                mvprintw(pos*9 + 7, 1, arrYear);
+                mvprintw(pos*9 + 7, 18, arrYear);
+                
+                refresh();
             }
             refresh();
             int stop = getch();
