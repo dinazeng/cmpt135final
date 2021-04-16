@@ -110,17 +110,6 @@ class manga_record{
             for (int n = 0; n < 4; n++){arrYear[n] = yearRel[n];}
             mvprintw(7, 18, arrYear);
             
-            attron(COLOR_PAIR(3));
-            mvprintw(9,1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
-            refresh();
-            char output = tolower(getch());
-            while ( output!= 'z'&& output!= 'c' && output!= 'e'){
-                attron(COLOR_PAIR(1));
-                mvprintw(11, 1, "Enter a valid action: ");
-                refresh();
-                output = tolower(getch());
-            }
-            
             refresh();
             int stop = tolower(getch());
 
