@@ -32,7 +32,6 @@ Limitations
 Known Bugs
 ----------
 --if the user makes a mistake while entering information, it would be hard to catch
-(list all known bugs here)
 
 --strings sometimes become corrupted when displayed
 
@@ -41,3 +40,5 @@ Extra Features
 --------------
 
 -listing: instead of displaying everything at the same time, scrolling is enabled
+
+-text is color coded (white for information, red and green for instructions and helpful messages)
