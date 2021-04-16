@@ -21,9 +21,6 @@ just to type "make" in the shell!)
 Limitations
 -----------
 
--when user is adding a new entry, entering "exit" at anytime will stop the program
-  -> if anything is called exit this will become a bug
-
 -terminal must be at least 100 characters wide and 15 lines long
 
 -limit of 100 characters per manga name and 10 charaters per year
@@ -31,9 +28,11 @@ Limitations
 
 Known Bugs
 ----------
---if the user makes a mistake while entering information, it would be hard to catch
+--if the user makes a mistake while entering information,it must be deleted and reupdated
 
 --strings sometimes become corrupted when displayed
+
+--user cannot enter any new entries with a name "exit" or author "exit"
 
 
 Extra Features
