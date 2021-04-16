@@ -388,7 +388,7 @@ class database {
         bool deleteConfirmation (int index, manga_record manga){
             // Use the parameter manga to display manga later once we have a function to do so
             initscr();
-            mvprintw(1,1, "Are you sure you would like to delete: ");
+            mvprintw(1,1, "You are deleting. Press any key to continue");
             char stop = tolower(getch());
             displayInformation(index, manga);
             mvprintw(1, 1, "Confirm (Y)es or (N)o: ");
@@ -447,6 +447,15 @@ class database {
         }
 
 /* -------------- Listing records in multiple different orders -------------- */
+
+        //changes all characters in a string to lower case
+        string toLowStr (string str){
+            string returnStr = "";
+            for (int pos = 0; pos < str.length(); pos++){
+                returnStr += tolower(str[pos]);}
+            return returnStr;
+        }
+
         vector<manga_record> listAlphabetical(){
 
             // Using selection sort, sort the manga based on the first character of names
@@ -462,7 +471,8 @@ class database {
                 // Iterate through the unsorted section of the vector
                 for (int j = i + 1; j < alphaList.size(); j++){
                     // Compare the first letters of the titles
-                    if (alphaList.at(j).getName() < alphaList.at(minIndex).getName()){
+                    if (toLowStr(alphaList.at(j).getName()) 
+                        < toLowStr(alphaList.at(minIndex).getName())){
                         minIndex = j;
                     }
                 }
@@ -1090,8 +1100,6 @@ class menu{
                     }
                 }
             }
-            // Turn first letter of name uppercase to precent sorting issues
-            name[0] = toupper(name[0]);
 
             erase();
 
