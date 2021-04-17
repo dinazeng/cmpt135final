@@ -1,65 +1,91 @@
-#include "cmpt_error.h"
-#include "record.h"
-#include <iostream>
+//database class
+
+#ifndef DATABASE_H
+#define DATABASE_H
+
+#include "manga_record.h"
 #include <vector>
-#include <string>
-#include <fstream>
 #include <ncurses.h>
+#include <string>
 using namespace std;
 
 class database {
     public:
-        // constructor
-        database(string input){}
+        // Default constructor
+        database(string input);
 
         // Reads in each entry in database.txt
         void readFile (string input);
 
 /* -------------------------- Searching for records ------------------------- */
-        // Searching by name
-        single_record searchByName (string name);
+        // Searching by exact name
+        vector<manga_record> searchByExactName (string name);
+        // Searching by substring name
+        vector<manga_record> searchBySubName (string name);
         // Searching by exact year
-        vector<single_record> searchByYear (int year);
+        vector<manga_record> searchByYear (int year);
         // Searching by year range
-        vector<single_record> searchByYear (int yearStart, int yearEnd);
+        vector<manga_record> searchByYear (int yearStart, int yearEnd);
+        // Serching by manga author
+        vector<manga_record> searchByAuthor(string name);
+        // Searching by status
+        vector<manga_record> searchByStatus(bool status);
+
 
 /* ------------------- Searching for and deleting records ------------------- */
-        // Searching by name
-        void deleteByName (string name);
+        // Searching by exact name
+        void deleteByExactName (string name);
+        // Searching by sub string name
+        void deleteBySubName (string name);
         // Searching by exact year
         void deleteByYear (int year);
         // Searching by year range
         void deleteByYear (int yearStart, int yearEnd);
-
-        bool realNum (string userInput, int end);
-        
         // Ask for confirmation on deleting record
-        bool deleteConfirmation(single_record manga);
-        void deleteConfirmationYear (vector<single_record> searchResults);
+        bool deleteConfirmation (int index, manga_record manga);
 
-        vector<single_record> listAlphabetical();       
-        vector<single_record> listAlphabeticalReverse();
+        void deleteConfirmationYear (vector<manga_record> searchResults);
+        
+        bool realNum (string userInput, int end);
+/* -------------- Listing records in multiple different orders -------------- */
 
-        vector<single_record> listNumerical();
-        vector<single_record> listNumericalReverse();
+        //changes all characters in a string to lower case
+        string toLowStr (string str);
 
+        vector<manga_record> listAlphabetical();
+
+        vector<manga_record> listAlphabeticalReverse();
+
+        vector<manga_record> listNumerical();
+
+        vector<manga_record> listNumericalReverse();
+
+        vector<manga_record> listAuthor();
+
+        vector <manga_record> listAuthorReverse();
 
         // Getters
-        vector<single_record> getMangaList() const;
+        vector<manga_record> getMangaList() const; // here
 
         //Modify the vector
-        void add_entry (single_record newEntry);
+        void add_entry (manga_record newEntry);
 
+        void printDatabase(vector<manga_record> mangaList);
+        
         // Displaying a manga's information
-        void displayInformation(int index, single_record manga);
+        char displayMultiple(int index, manga_record manga);
+
+        char displaySingular(int index, manga_record manga);
+
+        void notFound();
 
         // Deconstructor
         ~database();
 
-
-
     private:
-        vector<single_record> mangaList;
+        vector <manga_record> mangaList;
         int yMax, xMax;
-        WINDOW *win;
+        WINDOW*win;
 };
+
+#endif
