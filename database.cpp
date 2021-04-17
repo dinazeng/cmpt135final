@@ -60,7 +60,6 @@ void database::readFile (string input){
     }
 
     // Read in each input (line) from the file
-    vector<manga_record> mangaList;
     while (true){
         string entry;
         manga_record manga;
@@ -116,7 +115,6 @@ void database::readFile (string input){
         mangaList.push_back(manga);
     }
     inFile.close();
-    this->mangaList = mangaList;
 } 
 
 /* -------------------------- Searching for records ------------------------- */
@@ -230,7 +228,9 @@ void database::deleteByExactName (string name){
             bool userConfirmation = deleteConfirmation(i, mangaList.at(i));
             // Once the corresponding manga entry is found, ask user for confirmation
             // Return bool value to userConfirmation
-            if (userConfirmation == true){
+            werase(win);
+            box(win, 0, 0);
+            if (userConfirmation){
                 // Uses the corresponding index to delete the manga entry
                 mangaList.erase(mangaList.begin() + i);
                 char stop = 'z';
@@ -318,23 +318,20 @@ void database::deleteByYear (int yearStart, int yearEnd){
 // Ask for confirmation on deleting record
 bool database::deleteConfirmation (int index, manga_record manga){
     // Use the parameter manga to display manga later once we have a function to do so
-    char userResponse = displaySingular(index, manga);
-    werase(win);
-    box(win, 0, 0);
-    wrefresh(win);
-    if (userResponse == 'y'){return true;}
+    if (displaySingular(index, manga) == 'y'){return true;}
     return false;
 }
 
 void database::deleteConfirmationYear (vector<manga_record> searchResults){
     echo();
-    mvprintw(11, 1, "Enter the entry # of the one you want to delete: ");
+    werase(win);
+    mvprintw(1, 1, "Enter the entry # of the one you want to delete: ");
     wrefresh(win);
     char userStr [3];
     getstr(userStr);
     while (!realNum (userStr, searchResults.size())){
         attron(COLOR_PAIR(1));
-        mvprintw(13, 1, "The entry # inputted is invalid please try again: ");
+        mvprintw(3, 1, "The entry # inputted is invalid please try again: ");
         wrefresh(win);
         getstr(userStr);
     }
@@ -344,6 +341,8 @@ void database::deleteConfirmationYear (vector<manga_record> searchResults){
     // Account for index display, decrement by 1 for proper index
     int userInput = stoi (userStr) - 1;
     bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
+    werase(win);
+    box(win, 0, 0);
     if (userConfirmation == true){
         // Loop through the entries, find matching name of user's input then delete
         for (int i = 0; i < mangaList.size(); i++){
@@ -485,16 +484,16 @@ vector<manga_record> database::getMangaList() const{ return mangaList; };
 void database::add_entry (manga_record newEntry){mangaList.push_back(newEntry);}
 
 // Displaying a manga's information
-void database::printDatabase(vector<manga_record> mangaList)
+void database::printDatabase(vector<manga_record> mangas)
 {
     char input = '0';
     int loc = 0;
     while (input != 'e')
     {
-        input = displayMultiple(loc, mangaList[loc]);
+        input = displayMultiple(loc, mangas[loc]);
         if (input == 'c')
         {
-            if (loc != mangaList.size() - 1)
+            if (loc != mangas.size() - 1)
             {
                 loc++;
             }
