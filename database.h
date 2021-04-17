@@ -12,7 +12,7 @@ using namespace std;
 class database {
     public:
         // Default constructor
-        database(string input);
+        database();
 
         // Reads in each entry in database.txt
         void readFile (string input);

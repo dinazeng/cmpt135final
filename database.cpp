@@ -12,8 +12,9 @@
 using namespace std;
 
 // Default constructor
-database::database(string input){ 
-    readFile(input);
+database::database(){ 
+    mangaList = {};
+    readFile("database.txt");
     initscr();
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK); // FOR LABELS
@@ -26,10 +27,7 @@ database::database(string input){
     }
 
 // Reads in each entry in database.txt
-void database::readFile (string input){
-    
-    mangaList = {};
-    
+void database::readFile (string input){    
     // Reads in the file containing manga manga
     fstream inFile(input);
     // Checks if file name is valid
@@ -47,7 +45,7 @@ void database::readFile (string input){
         }
         if (userResponse == 'n'){
     
-            cmpt::error("\nThe file inputted does not exist. Please try again.");}
+    cmpt::error("\nThe file inputted does not exist. Please try again.");}
         werase(win);
         box(win, 0, 0);
         mvprintw(1, 1, "What is the name of the file?");
@@ -60,7 +58,6 @@ void database::readFile (string input){
     }
 
     // Read in each input (line) from the file
-    vector<manga_record> mangaList;
     while (true){
         string entry;
         manga_record manga;
@@ -116,7 +113,6 @@ void database::readFile (string input){
         mangaList.push_back(manga);
     }
     inFile.close();
-    this->mangaList = mangaList;
 } 
 
 /* -------------------------- Searching for records ------------------------- */
@@ -385,7 +381,7 @@ string database::toLowStr (string str){
 vector<manga_record> database::listAlphabetical(){
 
     // Using selection sort, sort the manga based on the first character of names
-    int minIndex;
+    int minIndex = 0;
     vector<manga_record> alphaList = mangaList;
 
     // Iteration for beginning index in unsorted section of alphabeticalList
@@ -523,49 +519,35 @@ char database::displayMultiple(int index, manga_record manga){
     mvprintw(1, 8, entry);
 
     mvprintw(2, 1,"=========================================");
-    
     attron(COLOR_PAIR(3));
     mvprintw(3, 1, "Name: ");
     attron(COLOR_PAIR(2));
-    char nameArr[manga.getName().length()];                
-    for (int n = 0; n < manga.getName().length(); n++){nameArr[n] = manga.getName()[n];}
-    mvprintw(3, 7, nameArr);
-    mvprintw(3, manga.getName().length() + 7, ".");
+    mvprintw(3, 7, manga.getName().data());
+    mvprintw(3, manga.getName().size() + 7, ".");
 
     attron(COLOR_PAIR(3));
     mvprintw(4, 1, "Genres: ");
     attron(COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < manga.getGenres().size() - 1; i++){
-        char arr[manga.getGenres().at(i).length()];
-        for (int n = 0; n < manga.getGenres().at(i).length(); n++){
-            arr[n] = manga.getGenres().at(i)[n];}
-        mvprintw(4, rowPos, arr);
+        mvprintw(4, rowPos, manga.getGenres().at(i).data());
         mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    char arrGen[manga.getGenres().at(manga.getGenres().size() - 1).length()];
-    for (int n = 0; n < manga.getGenres().at(manga.getGenres().size() - 1).length(); n++){
-        arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];}
-    mvprintw(4, rowPos, arrGen);
+    mvprintw(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
     mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
         
+    
     attron(COLOR_PAIR(3));
     mvprintw(5, 1, "Authors: ");
     attron(COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < manga.getAuthors().size() - 1; i++){
-        char arrAu[manga.getAuthors().at(i).length()];
-        for (int n = 0; n < manga.getAuthors().at(i).length(); n++){
-            arrAu[n] = manga.getAuthors().at(i)[n];}
-        mvprintw(5, rowPos, arrAu);
+        mvprintw(5, rowPos, manga.getAuthors().at(i).data());
         mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
-    for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size()-1).length(); n++){
-        arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];}
-    mvprintw(5, rowPos, arrAu);
+    mvprintw(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
     mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
     attron(COLOR_PAIR(3));
@@ -614,45 +596,32 @@ char database::displaySingular(int index, manga_record manga){
     attron(COLOR_PAIR(3));
     mvprintw(3, 1, "Name: ");
     attron(COLOR_PAIR(2));
-    char nameArr[manga.getName().length()];                
-    for (int n = 0; n < manga.getName().length(); n++){nameArr[n] = manga.getName()[n];}
-    mvprintw(3, 7, nameArr);
-    mvprintw(3, manga.getName().length() + 7, ".");
+    mvprintw(3, 7, manga.getName().data());
+    mvprintw(3, manga.getName().size() + 7, ".");
 
     attron(COLOR_PAIR(3));
     mvprintw(4, 1, "Genres: ");
     attron(COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < manga.getGenres().size() - 1; i++){
-        char arr[manga.getGenres().at(i).length()];
-        for (int n = 0; n < manga.getGenres().at(i).length(); n++){
-            arr[n] = manga.getGenres().at(i)[n];}
-        mvprintw(4, rowPos, arr);
+        mvprintw(4, rowPos, manga.getGenres().at(i).data());
         mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    char arrGen[manga.getGenres().at(manga.getGenres().size() - 1).length()];
-    for (int n = 0; n < manga.getGenres().at(manga.getGenres().size() - 1).length(); n++){
-        arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];}
-    mvprintw(4, rowPos, arrGen);
+    mvprintw(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
     mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
         
+    
     attron(COLOR_PAIR(3));
     mvprintw(5, 1, "Authors: ");
     attron(COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < manga.getAuthors().size() - 1; i++){
-        char arrAu[manga.getAuthors().at(i).length()];
-        for (int n = 0; n < manga.getAuthors().at(i).length(); n++){
-            arrAu[n] = manga.getAuthors().at(i)[n];}
-        mvprintw(5, rowPos, arrAu);
+        mvprintw(5, rowPos, manga.getAuthors().at(i).data());
         mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
-    for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size()-1).length(); n++){
-        arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];}
-    mvprintw(5, rowPos, arrAu);
+    mvprintw(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
     mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
     attron(COLOR_PAIR(3));

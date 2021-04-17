@@ -11,6 +11,11 @@
 // St.# : 301428398 
 // Email: yka92@sfu.ca
 //
+// Sources + Citations
+// ncurses tutorial: https://www.youtube.com/playlist?list=PL2U2TQ__OrQ8jTf0_noNKtHMuYlyxQl4v
+// ncurses Programming HOWTO: https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/
+// std::data: https://en.cppreference.com/w/cpp/iterator/data
+//
 // Statement of Originality
 // ------------------------
 //
@@ -26,5 +31,4 @@
 #include "menu.h"
 #include <string>
 
-int main() {
-    menu database;}
+int main() {menu database;}

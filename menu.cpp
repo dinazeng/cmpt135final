@@ -11,7 +11,7 @@ using namespace std;
 
 //default and only constructor
 menu::menu(){
-    info = new database("database.txt");
+    info = new database;
 
     initscr();
     noecho();
@@ -106,6 +106,7 @@ menu::menu(){
                 werase(win);
                 box(win,0,0);
                 wrefresh(win);
+                vector<manga_record> searchResults = {};
                 if (res == 't'){
                     mvwprintw(win,1, 1, "Enter the exact name of the manga: ");
                     char mangaName[100];
@@ -113,28 +114,7 @@ menu::menu(){
                     werase(win);
                     box(win,0,0);
                     wrefresh(win);
-                    vector<manga_record> searchResults = info->searchByExactName(mangaName);
-                    wattroff(win, COLOR_PAIR(3));
-                    noecho();
-                    if (searchResults.size() != 0)
-                    {
-                        printDatabase(searchResults);
-                        werase(win);
-                        box(win,0,0);
-                        wrefresh(win);
-                    }
-                    else {
-                        wattron(win, COLOR_PAIR(1));
-                        mvwprintw(win,1, 1, "Unfortunately, your input yielded no results.");
-                        char stop = 'z';
-                        while (stop != 'x'){
-                            wattron(win, COLOR_PAIR(3));
-                            mvwprintw(win,3,1,"Press \'x\' to continue");
-                            wrefresh(win);
-                            stop = tolower(getch());
-                        }
-                        wattroff(win, COLOR_PAIR(3));
-                    }
+                    searchResults = info->searchByExactName(mangaName);
                 }
                 else if (res == 'k'){
                     mvwprintw(win,1, 1, "Enter a key word of the manga: ");
@@ -142,27 +122,27 @@ menu::menu(){
                     wgetstr(win, mangaName);
                     werase(win);
                     box(win,0,0);
-                    vector<manga_record> searchResults = info->searchBySubName(mangaName);
-                    wattroff(win, COLOR_PAIR(3));
-                    noecho();
-                    if (searchResults.size() != 0)
-                    {
-                        printDatabase(searchResults);
-                        werase(win);
+                    searchResults = info->searchBySubName(mangaName);
+                }
+                wattroff(win, COLOR_PAIR(3));
+                noecho();
+                if (searchResults.size() != 0)
+                {
+                    printDatabase(searchResults);
+                    werase(win);
+                    wrefresh(win);
+                }
+                else {
+                    wattron(win, COLOR_PAIR(1));
+                    mvwprintw(win,1, 1, "Unfortunately, your input yielded no results.");
+                    char stop = 'z';
+                    while (stop != 'x'){
+                        wattron(win, COLOR_PAIR(3));
+                        mvwprintw(win,3,1,"Press \'x\' to continue");
                         wrefresh(win);
+                        stop = tolower(getch());
                     }
-                    else {
-                        wattron(win, COLOR_PAIR(1));
-                        mvwprintw(win,1, 1, "Unfortunately, your input yielded no results.");
-                        char stop = 'z';
-                        while (stop != 'x'){
-                            wattron(win, COLOR_PAIR(3));
-                            mvwprintw(win,3,1,"Press \'x\' to continue");
-                            wrefresh(win);
-                            stop = tolower(getch());
-                        }
-                        wattroff(win, COLOR_PAIR(3));
-                    }
+                    wattroff(win, COLOR_PAIR(3));
                 }
             }
 
@@ -346,15 +326,38 @@ menu::menu(){
 
             if (userResponse == 'n')
             {
-                echo();
                 wattron(win, COLOR_PAIR(3));
-                mvwprintw(win,1, 1, "Enter the name of the manga you are deleting: ");
+                echo();
+                mvwprintw(win,1, 1, "Are you deleting certain (K)ey words or a (T)itle itself?");
                 wrefresh(win);
-                char mangaName[100];
-                wgetstr(win, mangaName);
+                char res = tolower(getch());
+                while (res != 'k' && res != 't')
+                {
+                    wattron(win, COLOR_PAIR(1));
+                    mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
+                    wrefresh(win);
+                    res = tolower(getch());
+                }
                 werase(win);
                 box(win,0,0);
-                info->deleteByExactName(mangaName);
+                wrefresh(win);
+                if (res == 't'){
+                    mvwprintw(win,1, 1, "Enter the exact name of the manga: ");
+                    char mangaName[100];
+                    wgetstr(win, mangaName);
+                    werase(win);
+                    box(win,0,0);
+                    wrefresh(win);
+                    info->deleteByExactName(mangaName);
+                }
+                else if (res == 'k'){
+                    mvwprintw(win,1, 1, "Enter a key word of the manga: ");
+                    char mangaName[100];
+                    wgetstr(win, mangaName);
+                    werase(win);
+                    box(win,0,0);
+                    info->deleteBySubName(mangaName);
+                }
                 noecho();
             }
 
@@ -441,7 +444,7 @@ menu::menu(){
                 }
             }
         }
-        //list the database by alphatical order or numerical order
+        //list the database by alphbetical order or numerical order
         else if (response == 'l')
         {
             wattron(win, COLOR_PAIR(1));
@@ -707,7 +710,7 @@ void menu::printDatabase(vector<manga_record> mangaList)
 
 //prints a single entry
 char menu::printEntry(int index, vector<manga_record> mangaList){
-   werase(win);
+    werase(win);
     box(win,0,0);
     manga_record manga = mangaList.at(index);
     wattron(win, COLOR_PAIR(1));
@@ -721,62 +724,36 @@ char menu::printEntry(int index, vector<manga_record> mangaList){
 
     mvwprintw(win,2, 1, "=========================================");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,3, 1, "Name: ");
-    wattron(win, COLOR_PAIR(2));
-    char nameArr[manga.getName().length()];
-    for (int n = 0; n < manga.getName().length(); n++)
-    {
-        nameArr[n] = manga.getName()[n];
-    }
-    mvwprintw(win,3, 7, nameArr);
-    mvwprintw(win,3, manga.getName().length() + 7, ".");
+    attron(COLOR_PAIR(3));
+    mvprintw(3, 1, "Name: ");
+    attron(COLOR_PAIR(2));
+    mvprintw(3, 7, manga.getName().data());
+    mvprintw(3, manga.getName().size() + 7, ".");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,4, 1, "Genres: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvprintw(4, 1, "Genres: ");
+    attron(COLOR_PAIR(2));
     int rowPos = 9;
-    for (int i = 0; i < manga.getGenres().size() - 1; i++)
-    {
-        char arr[manga.getGenres().at(i).length()];
-        for (int n = 0; n < manga.getGenres().at(i).length(); n++)
-        {
-            arr[n] = manga.getGenres().at(i)[n];
-        }
-        mvwprintw(win,4, rowPos, arr);
-        mvwprintw(win,4, rowPos + manga.getGenres().at(i).length(), ", ");
+    for (int i = 0; i < manga.getGenres().size() - 1; i++){
+        mvprintw(4, rowPos, manga.getGenres().at(i).data());
+        mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    char arrGen[manga.getGenres().at(manga.getGenres().size() - 1).length()];
-    for (int n = 0; n < manga.getGenres().at(manga.getGenres().size() - 1).length(); n++)
-    {
-        arrGen[n] = manga.getGenres().at(manga.getGenres().size() - 1)[n];
-    }
-    mvwprintw(win,4, rowPos, arrGen);
-    mvwprintw(win,4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
-
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,5, 1, "Authors: ");
-    wattron(win, COLOR_PAIR(2));
+    mvprintw(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
+    mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+        
+    
+    attron(COLOR_PAIR(3));
+    mvprintw(5, 1, "Authors: ");
+    attron(COLOR_PAIR(2));
     rowPos = 10;
-    for (int i = 0; i < manga.getAuthors().size() - 1; i++)
-    {
-        char arrAu[manga.getAuthors().at(i).length()];
-        for (int n = 0; n < manga.getAuthors().at(i).length(); n++)
-        {
-            arrAu[n] = manga.getAuthors().at(i)[n];
-        }
-        mvwprintw(win,5, rowPos, arrAu);
-        mvwprintw(win,5, rowPos + manga.getAuthors().at(i).length(), ", ");
+    for (int i = 0; i < manga.getAuthors().size() - 1; i++){
+        mvprintw(5, rowPos, manga.getAuthors().at(i).data());
+        mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    char arrAu[manga.getAuthors().at(manga.getAuthors().size() - 1).length()];
-    for (int n = 0; n < manga.getAuthors().at(manga.getAuthors().size() - 1).length(); n++)
-    {
-        arrAu[n] = manga.getAuthors().at(manga.getAuthors().size() - 1)[n];
-    }
-    mvwprintw(win,5, rowPos, arrAu);
-    mvwprintw(win,5, rowPos + manga.getAuthors().at(manga.getAuthors().size() - 1).length(), ".");
+    mvprintw(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
+    mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
     wattron(win, COLOR_PAIR(3));
     mvwprintw(win,6, 1, "Status: ");
