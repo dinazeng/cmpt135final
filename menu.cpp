@@ -779,7 +779,7 @@ char menu::printEntry(int index, vector<manga_record> mangaList){
     mvwprintw(win,7, 18, arrYear);
 
     wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,9, 1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
+    mvwprintw(win,9, 1, "Enter \'e\' to exit");
     wrefresh(win);
     char output = tolower(getch());
     while (output != 'z' && output != 'c' && output != 'e')
