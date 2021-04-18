@@ -83,50 +83,37 @@ void manga_record::printEntry(){
     werase(win);
 
     attron(COLOR_PAIR(3));
-    mvprintw(2, 1,"=========================================");
+    mvprintw(1, 1,"=========================================");
     
     attron(COLOR_PAIR(3));
     mvprintw(3, 1, "Name: ");
     attron(COLOR_PAIR(2));
-    char nameArr[name.length()];                
-    for (int n = 0; n < name.length(); n++){nameArr[n] = name[n];}
-    mvprintw(3, 7, nameArr);
-    mvprintw(3, name.length() + 7, ".");
+    mvprintw(3, 7, name.data());
+    mvprintw(3, name.size() + 7, ".");
 
     attron(COLOR_PAIR(3));
     mvprintw(4, 1, "Genres: ");
     attron(COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < genres.size() - 1; i++){
-        char arr[genres.at(i).length()];
-        for (int n = 0; n < genres.at(i).length(); n++){
-            arr[n] = genres.at(i)[n];}
-        mvprintw(4, rowPos, arr);
+        mvprintw(4, rowPos, genres.at(i).data());
         mvprintw(4, rowPos + genres.at(i).length(), ", ");
         rowPos += genres.at(i).length() + 2;
     }
-    char arrGen[genres.at(genres.size() - 1).length()];
-    for (int n = 0; n < genres.at(genres.size() - 1).length(); n++){
-        arrGen[n] = genres.at(genres.size() - 1)[n];}
-    mvprintw(4, rowPos, arrGen);
+    mvprintw(4, rowPos, genres.at(genres.size() - 1).data());
     mvprintw(4, rowPos + genres.at(genres.size() - 1).length(), ".");
         
+    
     attron(COLOR_PAIR(3));
     mvprintw(5, 1, "Authors: ");
     attron(COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < authors.size() - 1; i++){
-        char arrAu[authors.at(i).length()];
-        for (int n = 0; n < authors.at(i).length(); n++){
-            arrAu[n] = authors.at(i)[n];}
-        mvprintw(5, rowPos, arrAu);
+        mvprintw(5, rowPos, authors.at(i).data());
         mvprintw(5, rowPos + authors.at(i).length(), ", ");
         rowPos += authors.at(i).length() + 2;
     }
-    char arrAu[authors.at(authors.size() - 1).length()];
-    for (int n = 0; n < authors.at(authors.size()-1).length(); n++){
-        arrAu[n] = authors.at(authors.size() - 1)[n];}
-    mvprintw(5, rowPos, arrAu);
+    mvprintw(5, rowPos, authors.at(authors.size()-1).data());
     mvprintw(5, rowPos + authors.at(authors.size()-1).length(), ".");
 
     attron(COLOR_PAIR(3));

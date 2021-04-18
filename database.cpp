@@ -513,10 +513,9 @@ char database::displayMultiple(int index, manga_record manga){
     wrefresh(win);
 
     attron(COLOR_PAIR(1));
-    mvprintw(1, 1, "Entry #");
-    char entry[to_string(index).length()];
-    for (int n = 0; n < 3; n++){entry[n] = to_string(index +1)[n];}
-    mvprintw(1, 8, entry);
+    mvwprintw(win,1, 1, "Entry #");
+    mvwprintw(win,1, 8, to_string(index + 1).data());
+
 
     mvprintw(2, 1,"=========================================");
     attron(COLOR_PAIR(3));
@@ -587,9 +586,8 @@ char database::displaySingular(int index, manga_record manga){
 
     attron(COLOR_PAIR(1));
     mvprintw(1,1,"You are deleting: Entry #");
-    char entry[to_string(index).length()];
-    for (int n = 0; n < 3; n++){entry[n] = to_string(index +1)[n];}
-    mvprintw(1, 25, entry);
+    mvwprintw(win,1, 26, to_string(index + 1).data());
+
 
     mvprintw(2, 1,"=========================================");
     

@@ -815,7 +815,7 @@ void menu::addEntry()
         wgetstr(win,name);
     }
 
-    if (toLowerStr(name) == "exit")
+    if (toLowerStr(deleteWhitespace(name)) == "exit")
     {
         return;
     }
@@ -863,7 +863,7 @@ void menu::addEntry()
         wrefresh(win);
 
         wgetstr(win, entry);
-        if (toLowerStr(entry) == "exit")
+        if (toLowerStr(deleteWhitespace(string(entry))) == "exit")
         {
             return;
         }
@@ -879,7 +879,7 @@ void menu::addEntry()
                  stop = tolower(getch());
             }  
         }
-        else if (toLowerStr(entry) == "stop")
+        else if (toLowerStr(deleteWhitespace(string(entry))) == "stop")
         {
             if (authors.size() != 0)
             {
@@ -923,7 +923,7 @@ void menu::addEntry()
         wrefresh(win);
 
         wgetstr(win, entry);
-        if (string(entry) == "exit")
+        if (toLowerStr(deleteWhitespace(string(entry))) == "exit")
         {
             return;
         }
@@ -939,7 +939,7 @@ void menu::addEntry()
             }  
         }
         else if 
-        (toLowerStr(entry) == "stop")
+        (toLowerStr(deleteWhitespace(string(entry))) == "stop")
         {
             if (genres.size() != 0)
             {
@@ -1097,8 +1097,7 @@ string menu::deleteWhitespace(string name){
         }
     }
 
-    string fixedName = name.substr(startingIndex, endingIndex);
-    return fixedName;
+    return name.substr(startingIndex, endingIndex - startingIndex + 1);
 
 }
 
