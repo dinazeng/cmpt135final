@@ -18,20 +18,20 @@
 #   -g puts debugging info into the executables (makes them larger)
 CPPFLAGS = -std=c++17 -Wall -Wextra -Werror -Wfatal-errors -Wno-sign-compare -Wnon-virtual-dtor -g
 
-final_main: final.o database.o manga_record.o menu.o
-	g++ -o app final.o database.o manga_record.o menu.o -lncurses
+Final_Main: Final.o Database.o Manga_record.o Menu.o
+	g++ -o app Final.o Database.o Manga_Record.o Menu.o -lncurses
 
-final: 
-	g++ -c $(CPPFLAGS) final.cpp 
+Final: 
+	g++ -c $(CPPFLAGS) Final.cpp 
 
-database:
-	g++ -c $(CPPFLAGS) database.cpp 
+Database:
+	g++ -c $(CPPFLAGS) Database.cpp 
 
-manga_record:
-	g++ -c $(CPPFLAGS) manga_record.cpp
+Manga_Record:
+	g++ -c $(CPPFLAGS) Manga_Record.cpp
 
-menu:
-	g++ -c $(CPPFLAGS) menu.cpp
+Menu:
+	g++ -c $(CPPFLAGS) Menu.cpp
 
 clean:
-	rm -f final_main.o final.o database.o manga_record.o menu.o 
+	rm -f Final_Main.o Final.o Database.o Manga_Record.o Menu.o 
