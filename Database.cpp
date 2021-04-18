@@ -13,46 +13,43 @@ using namespace std;
 
 // Default constructor
 Database::Database(){ 
-    mangaList = {};
-    readFile("database.txt");
+    mangaList = readFile("database.txt");
     initscr();
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK); // FOR LABELS
     init_pair(2, COLOR_WHITE, COLOR_BLACK); // FOR INFO
     init_pair(3, COLOR_GREEN, COLOR_BLACK); // HELPFUL MESSAGES
     getmaxyx(stdscr, yMax, xMax);
-    win = newwin(yMax*3/4, xMax*3/4,0, 0);
-    box(win, 0, 0);
     refresh();
     }
 
 // Reads in each entry in database.txt
-void Database::readFile (string input){    
+vector<Manga_Record> Database::readFile (string input){    
     // Reads in the file containing manga manga
+    vector <Manga_Record> mangaVec = {};
     fstream inFile(input);
     // Checks if file name is valid
     while (inFile.fail()){
         // Asks user if they meant something else. 
         // Yes = rerun function with correct name
         // No = quit program
-        mvwprintw(win,1, 1,"File does not exist. Did you mean something else? (Y)es or (N)o: ");
-        wrefresh(win);
-        char userResponse = tolower(wgetch(win));
+        mvaddstr(1, 1,"File does not exist. Did you mean something else? (Y)es or (N)o: ");
+        refresh();
+        char userResponse = tolower(getch());
         while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r'){
-            mvwprintw(win,2, 1, "Your response is invalid, please try again: ");
-            wrefresh(win);
-            userResponse = tolower(wgetch(win));
+            mvaddstr(2, 1, "Your response is invalid, please try again: ");
+            refresh();
+            userResponse = tolower(getch());
         }
         if (userResponse == 'n'){
     
     cmpt::error("\nThe file inputted does not exist. Please try again.");}
-        werase(win);
-        box(win, 0, 0);
-        mvwprintw(win,1, 1, "What is the name of the file?");
+        erase();
+        mvaddstr(1, 1, "What is the name of the file?");
         echo();
-        wrefresh(win);
-        char correctInput [100];
-        wgetstr(win,correctInput);
+        refresh();
+        char correctInput [200];
+        getnstr(correctInput, 190);
         noecho();
         fstream inFile(correctInput);
     }
@@ -110,9 +107,10 @@ void Database::readFile (string input){
         manga.set_year (stoi(entry));
 
         // Append all this information to mangaList as its own object
-        mangaList.push_back(manga);
+        mangaVec.push_back(manga);
     }
     inFile.close();
+    return mangaVec;
 } 
 
 /* -------------------------- Searching for records ------------------------- */
@@ -135,16 +133,13 @@ vector<Manga_Record> Database::searchByExactName (string name){
 // Searching by sub string name
 vector<Manga_Record> Database::searchBySubName (string name){
     vector<Manga_Record>searchResults = {};
-
     for (Manga_Record manga : mangaList){
-
         string lowercaseName = toLowStr(name);
         string lowercaseTitle = toLowStr(manga.getName());
 
         if (lowercaseTitle.find(lowercaseName) != -1){
             searchResults.push_back(manga);
         }
-        
     }
     return searchResults;
 }
@@ -254,25 +249,26 @@ void Database::deleteByExactName (string name){
                 mangaList.erase(mangaList.begin() + i);
                 char stop = 'z';
                 while (stop != 'x'){
-                    mvwprintw(win,1,1,"Entry Deleted. Press \'x\' to continue.");
-                    wrefresh(win);
-                    stop = wgetch(win);
+                    erase();
+                    mvaddstr(1,1,"Entry Deleted. Press \'x\' to continue.");
+                    refresh();
+                    stop = getch();
                 }
-                werase(win);
-                box(win, 0, 0);
+                erase();
+                
         
                 return;
             }
             else {
                 char stop = 'z';
                 while (stop != 'x'){
-                    mvwprintw(win,1,1,"Entry NOT Deleted. Press \'x\' to continue.");
-                    wrefresh(win);
-                    stop = wgetch(win);
+                    erase();
+                    mvaddstr(1,1,"Entry NOT Deleted. Press \'x\' to continue.");
+                    refresh();
+                    stop = getch();
                 }
-                werase(win);
-                box(win, 0, 0);
-        
+                erase();
+                
                 return;
             }
         }
@@ -281,9 +277,7 @@ void Database::deleteByExactName (string name){
 }
 // Searching by sub string name
 void Database::deleteBySubName (string name){
-
     vector<Manga_Record> searchResults = searchBySubName(name);
-    
     if (searchResults.size() == 0){
         notFound();
         return;
@@ -319,31 +313,29 @@ void Database::deleteByYear (int yearStart, int yearEnd){
 bool Database::deleteConfirmation (int index, Manga_Record manga){
     // Use the parameter manga to display manga later once we have a function to do so
     char userResponse = displaySingular(index, manga);
-    werase(win);
-    box(win, 0, 0);
-    wrefresh(win);
     if (userResponse == 'y'){return true;}
     return false;
 }
 
 void Database::deleteConfirmationYear (vector<Manga_Record> searchResults){
-    mvwprintw(win,11, 1, "Enter the entry # of the one you want to delete: ");
+    mvaddstr(11, 1, "Enter the entry # of the one you want to delete: ");
     echo();
-    wrefresh(win);
-    char userStr [3];
-    wgetstr(win,userStr);
-    while (!realNum (userStr, searchResults.size())){
+    refresh();
+    char userStr [4];
+    getnstr(userStr, 3);
+    while (!realNum (string(userStr), searchResults.size())){
         attron(COLOR_PAIR(1));
-        mvwprintw(win,13, 1, "The entry # inputted is invalid please try again: ");
-        wrefresh(win);
-        wgetstr(win,userStr);
+        mvaddstr(13, 1, "The entry # inputted is invalid please try again: ");
+        refresh();
+        getnstr(userStr, 3);
     }
-    werase(win);
-    box(win, 0, 0);
+    erase();
+    
     noecho();
     // Account for index display, decrement by 1 for proper index
     int userInput = stoi (userStr) - 1;
     bool userConfirmation = deleteConfirmation (userInput, searchResults.at(userInput));
+    erase();
     if (userConfirmation == true){
         // Loop through the entries, find matching name of user's input then delete
         for (int i = 0; i < mangaList.size(); i++){
@@ -351,15 +343,15 @@ void Database::deleteConfirmationYear (vector<Manga_Record> searchResults){
                 mangaList.erase(mangaList.begin() + i);
             }
         }
-        mvwprintw(win,1, 1, "Entry has been deleted.");
+        mvaddstr(1, 1, "Entry has been deleted.");
     }
-    else {mvwprintw(win,1, 1, "Entry has NOT been deleted.");}
-    wrefresh(win);
+    else {mvaddstr(1, 1, "Entry has NOT been deleted.");}
+    refresh();
     char stop = 'z';
     while (stop != 'x'){
-        mvwprintw(win,3,1,"Press \'x\' to continue.");
-        wrefresh(win);
-        stop = wgetch(win);
+        mvaddstr(3,1,"Press \'x\' to continue.");
+        refresh();
+        stop = getch();
     }
 }
 
@@ -510,73 +502,73 @@ void Database::printDatabase(vector<Manga_Record> mangaVec)
 }
 
 char Database::displayMultiple(int index, vector<Manga_Record> mangaVec){
-    werase(win);
-    box(win,0,0);
+    erase();
+
     Manga_Record manga = mangaVec.at(index);
-    wattron(win, COLOR_PAIR(1));
-    mvwprintw(win,1, 1, "Entry #");
-    mvwprintw(win,1, 8, to_string(index + 1).data());
+    attron(COLOR_PAIR(1));
+    mvaddstr(1, 1, "Entry #");
+    mvaddstr(1, 8, to_string(index + 1).data());
 
-    mvwprintw(win,2, 1, "=========================================");
+    mvaddstr(2, 1, "=========================================");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,3, 1, "Name: ");
-    wattron(win, COLOR_PAIR(2));
-    mvwprintw(win,3, 7, manga.getName().data());
-    mvwprintw(win,3, manga.getName().size() + 7, ".");
+    attron(COLOR_PAIR(3));
+    mvaddstr(3, 1, "Name: ");
+    attron(COLOR_PAIR(2));
+    mvaddstr(3, 7, manga.getName().data());
+    mvaddstr(3, manga.getName().size() + 7, ".");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,4, 1, "Genres: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvaddstr(4, 1, "Genres: ");
+    attron(COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < manga.getGenres().size() - 1; i++){
-        mvwprintw(win,4, rowPos, manga.getGenres().at(i).data());
-        mvwprintw(win,4, rowPos + manga.getGenres().at(i).length(), ", ");
+        mvaddstr(4, rowPos, manga.getGenres().at(i).data());
+        mvaddstr(4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    mvwprintw(win,4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
-    mvwprintw(win,4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+    mvaddstr(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
+    mvaddstr(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
         
     
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,5, 1, "Authors: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvaddstr(5, 1, "Authors: ");
+    attron(COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < manga.getAuthors().size() - 1; i++){
-        mvwprintw(win,5, rowPos, manga.getAuthors().at(i).data());
-        mvwprintw(win,5, rowPos + manga.getAuthors().at(i).length(), ", ");
+        mvaddstr(5, rowPos, manga.getAuthors().at(i).data());
+        mvaddstr(5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    mvwprintw(win,5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
-    mvwprintw(win,5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
+    mvaddstr(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
+    mvaddstr(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,6, 1, "Status: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvaddstr(6, 1, "Status: ");
+    attron(COLOR_PAIR(2));
     if (manga.getStatus() == true)
     {
-        mvwprintw(win,6, 9, "Releasing.");
+        mvaddstr(6, 9, "Releasing.");
     }
     else
     {
-        mvwprintw(win,6, 9, "Completed.");
+        mvaddstr(6, 9, "Completed.");
     }
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,7, 1, "Year of release: ");
-    wattron(win, COLOR_PAIR(2));
-    mvwprintw(win,7, 18, to_string(manga.getYear()).data());
+    attron(COLOR_PAIR(3));
+    mvaddstr(7, 1, "Year of release: ");
+    attron(COLOR_PAIR(2));
+    mvaddstr(7, 18, to_string(manga.getYear()).data());
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,9, 1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
-    wrefresh(win);
-    char output = tolower(wgetch(win));
+    attron(COLOR_PAIR(3));
+    mvaddstr(9, 1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
+    refresh();
+    char output = tolower(getch());
     while (output != 'z' && output != 'c' && output != 'e')
     {
-        wattron(win, COLOR_PAIR(1));
-        mvwprintw(win,11, 1, "Enter a valid action: ");
-        wrefresh(win);
-        output = tolower(wgetch(win));
+        attron(COLOR_PAIR(1));
+        mvaddstr(11, 1, "Enter a valid action: ");
+        refresh();
+        output = tolower(getch());
     }
     return output;
 }
@@ -584,86 +576,82 @@ char Database::displayMultiple(int index, vector<Manga_Record> mangaVec){
 char Database::displaySingular(int index, Manga_Record manga){
 // Displays information with proper formatting and colour coding
 
-    werase(win);
-    box(win, 0, 0);
-    wrefresh(win);
+    erase();
+    
+    refresh();
 
     attron(COLOR_PAIR(1));
-    mvwprintw(win,1,1,"You are deleting: Entry #");
-    mvwprintw(win,1, 26, to_string(index + 1).data());
+    mvaddstr(1,1,"You are deleting: Entry #");
+    mvaddstr(1, 26, to_string(index + 1).data());
 
 
-    mvwprintw(win,2, 1,"=========================================");
+    mvaddstr(2, 1,"=========================================");
     
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,3, 1, "Name: ");
-    wattron(win, COLOR_PAIR(2));
-    mvwprintw(win,3, 7, manga.getName().data());
-    mvwprintw(win,3, manga.getName().size() + 7, ".");
+    attron(COLOR_PAIR(3));
+    mvaddstr(3, 1, "Name: ");
+    attron(COLOR_PAIR(2));
+    mvaddstr(3, 7, manga.getName().data());
+    mvaddstr(3, manga.getName().size() + 7, ".");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,4, 1, "Genres: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvaddstr(4, 1, "Genres: ");
+    attron(COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < manga.getGenres().size() - 1; i++){
-        mvwprintw(win,4, rowPos, manga.getGenres().at(i).data());
-        mvwprintw(win,4, rowPos + manga.getGenres().at(i).length(), ", ");
+        mvaddstr(4, rowPos, manga.getGenres().at(i).data());
+        mvaddstr(4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    mvwprintw(win,4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
-    mvwprintw(win,4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+    mvaddstr(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
+    mvaddstr(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
         
     
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,5, 1, "Authors: ");
-    wattron(win, COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
+    mvaddstr(5, 1, "Authors: ");
+    attron(COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < manga.getAuthors().size() - 1; i++){
-        mvwprintw(win,5, rowPos, manga.getAuthors().at(i).data());
-        mvwprintw(win,5, rowPos + manga.getAuthors().at(i).length(), ", ");
+        mvaddstr(5, rowPos, manga.getAuthors().at(i).data());
+        mvaddstr(5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    mvwprintw(win,5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
-    mvwprintw(win,5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
+    mvaddstr(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
+    mvaddstr(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,6, 1,"Status: ");
-    wattron(win, COLOR_PAIR(2));
-    if (manga.getStatus() == true){mvwprintw(win,6, 9,"Releasing.");}
-    else {mvwprintw(win,6, 9,"Completed.");}
+    attron(COLOR_PAIR(3));
+    mvaddstr(6, 1,"Status: ");
+    attron(COLOR_PAIR(2));
+    if (manga.getStatus() == true){mvaddstr(6, 9,"Releasing.");}
+    else {mvaddstr(6, 9,"Completed.");}
 
-    wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,7, 1, "Year of release: ");
-    wattron(win, COLOR_PAIR(2));
-    mvwprintw(win,7, 18, to_string(manga.getYear()).data());
+    attron(COLOR_PAIR(3));
+    mvaddstr(7, 1, "Year of release: ");
+    attron(COLOR_PAIR(2));
+    mvaddstr(7, 18, to_string(manga.getYear()).data());
     
-    mvwprintw(win,9, 1, "Confirm (Y)es or (N)o: ");
-    wrefresh(win);
-    int userResponse = tolower(wgetch(win));
+    mvaddstr(9, 1, "Confirm (Y)es or (N)o: ");
+    refresh();
+    char userResponse = tolower(getch());
     while (userResponse != 'n' && userResponse != 'y'){
-        mvwprintw(win,11, 1, "Your response is invalid, please try again: ");
-        wrefresh(win);
-        userResponse = tolower(wgetch(win));
+        mvaddstr(11, 1, "Your response is invalid, please try again: ");
+        refresh();
+        userResponse = tolower(getch());
     } 
-
     return userResponse;
 }
 
 void Database::notFound(){
-    start_color(); 
-    wrefresh(win);
+    refresh();
     char stop = 'z';
     while (stop != 'x'){
-        mvwprintw(win,1,1,"The manga that you are looking for cannot be found. Please try again.");
-        mvwprintw(win,3,1, "Press \'x\' to continue");
-        wrefresh(win);
-        stop = wgetch(win);
+        mvaddstr(1,1,"The manga that you are looking for cannot be found. Please try again.");
+        mvaddstr(3,1, "Press \'x\' to continue");
+        refresh();
+        stop = getch();
     }
-    werase(win);
-    box(win, 0, 0);
+    erase();
 }
 
 // Deconstructor
 Database::~Database(){
-    delwin(win);
     endwin();}

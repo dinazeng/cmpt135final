@@ -24,11 +24,15 @@ Limitations
 
 --terminal must be at least 100 characters wide and 20 lines long
 
---limit of 100 characters per manga name and 10 charaters per year
+--limit of 99 characters per manga name and 9 charaters per year
 
 --user cannot enter any new entries with "exit" for: name, genres or authors
 
 --no spell check available (if a user enters a string it will be displayed in that exact format)
+
+--the user CANNOT use '{}' or '|' or ',' as a part of an author/genre entry
+
+--the user CANNOT use '|' as a part of a title entry 
 
 Known Bugs
 ----------

@@ -33,8 +33,11 @@ class Menu{
         //adds an entry to the Database
         void addEntry();
 
-        // Checks if string is blank
-        bool isBlankString(string input);
+        // Checks if string is illegal
+        bool isIllegalName(string input);
+
+        // Checks if authors/genres is illegal
+        bool isIllegalVector(string input);
 
         // Deletes leading and trailing whitespace
         string deleteWhitespace(string name);
@@ -44,7 +47,6 @@ class Menu{
     private:
         char response;
         Database *info;
-        WINDOW*win;
         int yMax, xMax;
 };
 

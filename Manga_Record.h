@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <string>
-#include <ncurses.h>
 using namespace std;
 
 class Manga_Record{
@@ -47,7 +46,6 @@ class Manga_Record{
         vector <string> genres;
         bool isReleasing;
         int year;
-        WINDOW* win;
 };
 
 #endif

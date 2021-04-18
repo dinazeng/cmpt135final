@@ -15,7 +15,7 @@ class Database {
         Database();
 
         // Reads in each entry in Database.txt
-        void readFile (string input);
+        vector<Manga_Record> readFile (string input);
 
 /* -------------------------- Searching for records ------------------------- */
         // Searching by exact name
@@ -87,7 +87,6 @@ class Database {
     private:
         vector <Manga_Record> mangaList;
         int yMax, xMax;
-        WINDOW*win;
 };
 
 #endif
