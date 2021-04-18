@@ -203,11 +203,13 @@ menu::menu(){
             {
                 wattron(win, COLOR_PAIR(3));
                 mvwprintw(win,1, 1, "Are you searching for a (S)pecific year or a (R)ange:");
+                wrefresh(win);
                 input = tolower(getch());
                 while (input != 's' && input != 'r')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
+                    wrefresh(win);
                     input = tolower(getch());
                 }
         
@@ -715,12 +717,7 @@ char menu::printEntry(int index, vector<manga_record> mangaList){
     manga_record manga = mangaList.at(index);
     wattron(win, COLOR_PAIR(1));
     mvwprintw(win,1, 1, "Entry #");
-    char entry[to_string(index).length()];
-    for (int n = 0; n < 3; n++)
-    {
-        entry[n] = to_string(index + 1)[n];
-    }
-    mvwprintw(win,1, 8, entry);
+    mvwprintw(win,1, 8, to_string(index + 1).data());
 
     mvwprintw(win,2, 1, "=========================================");
 
@@ -779,7 +776,7 @@ char menu::printEntry(int index, vector<manga_record> mangaList){
     mvwprintw(win,7, 18, arrYear);
 
     wattron(win, COLOR_PAIR(3));
-    mvwprintw(win,9, 1, "Enter \'e\' to exit");
+    mvwprintw(win,9, 1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
     wrefresh(win);
     char output = tolower(getch());
     while (output != 'z' && output != 'c' && output != 'e')
@@ -827,14 +824,15 @@ void menu::addEntry()
     {
         for (int pos = 0; pos < info->getMangaList().size(); pos++)
         {
-            if (toLowerStr(info->getMangaList().at(pos).getName()) == (toLowerStr(name)))
+            if (toLowerStr(info->getMangaList().at(pos).getName()) 
+                == (toLowerStr(deleteWhitespace(name))))
             {
                 werase(win);
                 box(win,0,0);
                 char stop = 'z';
                 while (stop != 'x'){
                     wattron(win, COLOR_PAIR(1));
-                    mvwprintw(win,1, 1, "Entry already exists. Press \'x\' to return to main menu.");
+                    mvwprintw(win,1, 1, "Entry already exists. Press \'x\' to return to menu.");
                     wrefresh(win);
                     stop = tolower(getch());
                     werase(win);
@@ -902,7 +900,7 @@ void menu::addEntry()
         }
        else
         {
-            authors.push_back(entry);
+            authors.push_back(deleteWhitespace(entry));
         }
     }
 
@@ -962,7 +960,7 @@ void menu::addEntry()
         }
         else
         {
-            genres.push_back(entry);
+            genres.push_back(deleteWhitespace(entry));
         }
     }
 
@@ -1017,7 +1015,7 @@ void menu::addEntry()
         wgetstr(win, year);
     }
 
-    manga_record newRecord(name, authors, genres, isReleasing, stoi(year));
+    manga_record newRecord(deleteWhitespace(name), authors, genres, isReleasing, stoi(year));
 
     werase(win);
     box(win,0,0);
@@ -1076,6 +1074,31 @@ bool menu::isBlankString(string input){
     }
     // If every character is a space, return true;
     return true;
+
+}
+
+// Deletes leading and trailing whitespace
+string menu::deleteWhitespace(string name){
+
+    // Starts from beginning, finds first nonspace char
+    int startingIndex = 0;
+    for (int i = 0; i < name.size(); i++){
+        if (name.at(i) != ' '){
+            startingIndex = i;
+            break;
+        }
+    }
+    // Starts from ending, finds last nonspace char
+    int endingIndex = 0;
+    for (int i = name.size() - 1; i >= 0; i--){
+        if (name.at(i) != ' '){
+            endingIndex = i;
+            break;
+        }
+    }
+
+    string fixedName = name.substr(startingIndex, endingIndex);
+    return fixedName;
 
 }
 

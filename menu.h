@@ -36,6 +36,9 @@ class menu{
         // Checks if string is blank
         bool isBlankString(string input);
 
+        // Deletes leading and trailing whitespace
+        string deleteWhitespace(string name);
+
         ~menu();
     
     private:
