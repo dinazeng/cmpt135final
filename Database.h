@@ -49,8 +49,8 @@ class Database {
         void deleteConfirmationYear (vector<Manga_Record> searchResults);
         
         bool realNum (string userInput, int end);
-/* -------------- Listing records in multiple different orders -------------- */
 
+/* -------------- Listing records in multiple different orders -------------- */
         //changes all characters in a string to lower case
         string toLowStr (string str);
 
@@ -75,7 +75,7 @@ class Database {
         void printDatabase(vector<Manga_Record> mangaList);
         
         // Displaying a manga's information
-        char displayMultiple(int index, Manga_Record manga);
+        char displayMultiple(int index, vector<Manga_Record> mangaVec);
 
         char displaySingular(int index, Manga_Record manga);
 

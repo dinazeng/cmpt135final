@@ -35,7 +35,7 @@ Menu::Menu(){
         wattron(win, COLOR_PAIR(3));
         mvwprintw(win,yMax*3/8-1,xMax*3/8-10,"Press \'x\' to continue");
         wrefresh(win);
-        stop = tolower(getch());
+        stop = tolower(wgetch(win));
     }
 
     response = 'p';
@@ -77,13 +77,13 @@ Menu::Menu(){
 
             wrefresh(win);
 
-            char input = tolower(getch());
+            char input = tolower(wgetch(win));
             while (input != 'n'&& input != 'g' && input != 'a' &&
                    input != 's' && input != 'y' && input != 'r')
             {
                 mvwprintw(win,15, 1, "Your response is invalid, please try again: ");
                 wrefresh(win);
-                input = tolower(getch());
+                input = tolower(wgetch(win));
             }
 
             werase(win);
@@ -97,13 +97,13 @@ Menu::Menu(){
                 echo();
                 mvwprintw(win,1, 1, "Are you searching for (K)ey words or the (T)itle itself?");
                 wrefresh(win);
-                char res = tolower(getch());
+                char res = tolower(wgetch(win));
                 while (res != 'k' && res != 't')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    res = tolower(getch());
+                    res = tolower(wgetch(win));
                 }
                 werase(win);
                 box(win,0,0);
@@ -142,7 +142,7 @@ Menu::Menu(){
                         wattron(win, COLOR_PAIR(3));
                         mvwprintw(win,3,1,"Press \'x\' to continue");
                         wrefresh(win);
-                        stop = tolower(getch());
+                        stop = tolower(wgetch(win));
                     }
                     wattroff(win, COLOR_PAIR(3));
                 }
@@ -175,7 +175,7 @@ Menu::Menu(){
                     while (stop != 'x'){
                         mvwprintw(win,3,1,"Press \'x\' to continue");
                         wrefresh(win);
-                        stop = tolower(getch());
+                        stop = tolower(wgetch(win));
                     }
                     wattroff(win, COLOR_PAIR(2));
                 }
@@ -208,7 +208,7 @@ Menu::Menu(){
                     while (stop != 'x'){
                         mvwprintw(win,3,1,"Press \'x\' to continue");
                         wrefresh(win);
-                        stop = tolower(getch());
+                        stop = tolower(wgetch(win));
                     }
                     wattroff(win, COLOR_PAIR(2));
                 }
@@ -219,13 +219,13 @@ Menu::Menu(){
                 wattron(win, COLOR_PAIR(3));
                 mvwprintw(win,1, 1, "Are you searching for (C)ompleted or (I)n Progress mangas: ");
                 wrefresh(win);
-                input = tolower(getch());
+                input = tolower(wgetch(win));
                 wattroff(win, COLOR_PAIR(3));
                 while (input != 'c' && input != 'i')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
-                    input = tolower(getch());
+                    input = tolower(wgetch(win));
             
                 }
                 werase(win);
@@ -239,13 +239,13 @@ Menu::Menu(){
                 wattron(win, COLOR_PAIR(3));
                 mvwprintw(win,1, 1, "Are you searching for a (S)pecific year or a (R)ange:");
                 wrefresh(win);
-                input = tolower(getch());
+                input = tolower(wgetch(win));
                 while (input != 's' && input != 'r')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    input = tolower(getch());
+                    input = tolower(wgetch(win));
                 }
         
                 wattroff(win, COLOR_PAIR(3));
@@ -268,7 +268,7 @@ Menu::Menu(){
                         wrefresh(win);
                         wgetstr(win, year);
                     }
-                    printDatabase(info->searchByYear(stoi(year)));
+                    printDatabase(info->searchByYear(stoi(string(year))));
                     werase(win);
                     box(win,0,0);
                     wrefresh(win);
@@ -319,14 +319,14 @@ Menu::Menu(){
                             wattron(win, COLOR_PAIR(3));
                             mvwprintw(win,3, 1,"Press \'x\' to continue");
                             wrefresh(win);
-                            stop = tolower(getch());
+                            stop = tolower(wgetch(win));
                         }
                         werase(win);
                         box(win,0,0);
                         wrefresh(win);
                     }
                     else{
-                        printDatabase(info->searchByYear(stoi(startYear), stoi(endYear)));
+                        printDatabase(info->searchByYear(stoi(string(startYear)), stoi(string(startYear))));
                         werase(win);
                         box(win,0,0);
                         wrefresh(win);
@@ -348,13 +348,13 @@ Menu::Menu(){
             mvwprintw(win,10, 1, "Enter the letter of your choice: ");
             wrefresh(win);
 
-            char userResponse = tolower(getch());
+            char userResponse = tolower(wgetch(win));
             while (userResponse != 'n' && userResponse != 'y' && userResponse != 'r')
             {
                 wattron(win, COLOR_PAIR(1));
                 mvwprintw(win,12, 1, "Your response is invalid, please try again: ");
                 wrefresh(win);
-                userResponse = tolower(getch());
+                userResponse = tolower(wgetch(win));
             }
 
             werase(win);
@@ -367,13 +367,13 @@ Menu::Menu(){
                 echo();
                 mvwprintw(win,1, 1, "Are you deleting certain (K)ey words or a (T)itle itself?");
                 wrefresh(win);
-                char res = tolower(getch());
+                char res = tolower(wgetch(win));
                 while (res != 'k' && res != 't')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    res = tolower(getch());
+                    res = tolower(wgetch(win));
                 }
                 werase(win);
                 box(win,0,0);
@@ -404,7 +404,7 @@ Menu::Menu(){
                 mvwprintw(win,1, 1, "Are you deleting a (S)pecific year or a (R)ange: ");
                 wrefresh(win);
 
-                char userResponse = tolower(getch());
+                char userResponse = tolower(wgetch(win));
                 while (userResponse != 's' && userResponse != 'r')
                 {
                     werase(win);
@@ -416,7 +416,7 @@ Menu::Menu(){
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    userResponse = tolower(getch());
+                    userResponse = tolower(wgetch(win));
                 }
  
                 werase(win);
@@ -477,7 +477,7 @@ Menu::Menu(){
                     box(win,0,0);
                     wrefresh(win);
                     noecho();
-                    info->deleteByYear(stoi(startYear), stoi(endYear));
+                    info->deleteByYear(stoi(string(startYear)), stoi(string((endYear))));
                 }
             }
         }
@@ -497,13 +497,13 @@ Menu::Menu(){
             mvwprintw(win,11, 1, "Enter the letter of your choice: ");
             wrefresh(win);
 
-            char input = tolower(getch());
+            char input = tolower(wgetch(win));
             while (input != 'n' && input != 'y' && input != 'r' && input != 'a')
             {
                 wattron(win, COLOR_PAIR(1));
                 mvwprintw(win,13, 1, "Your response is invalid, please try again: ");
                 wrefresh(win);
-                input = tolower(getch());
+                input = tolower(wgetch(win));
             }
 
             werase(win);
@@ -516,13 +516,13 @@ Menu::Menu(){
                 mvwprintw(win,1, 52, " in (R)everse alphabetical order?: ");
                 wrefresh(win);
 
-                char userRes = tolower(getch());
+                char userRes = tolower(wgetch(win));
                 while (userRes != 'a' && userRes != 'r')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    userRes = tolower(getch());
+                    userRes = tolower(wgetch(win));
                 }
 
                 if (userRes == 'a' && input == 'n')
@@ -550,13 +550,13 @@ Menu::Menu(){
                 mvwprintw(win,1, 49, " in (D)escending order?: ");
                 wrefresh(win);
 
-                char userResponse = tolower(getch());
+                char userResponse = tolower(wgetch(win));
                 while (userResponse != 'a' && userResponse != 'd')
                 {
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
                     wrefresh(win);
-                    userResponse = tolower(getch());
+                    userResponse = tolower(wgetch(win));
                 }
 
                 if (userResponse == 'a')
@@ -607,7 +607,7 @@ Menu::Menu(){
             while (stop != 'x'){
                 mvwprintw(win,3,1,"Press \'x\' to continue");
                 wrefresh(win);
-                stop = tolower(getch());
+                stop = tolower(wgetch(win));
             }
             delwin(win);
             endwin();
@@ -663,7 +663,7 @@ Menu::Menu(){
                 wattron(win, COLOR_PAIR(1));
                 mvwprintw(win,1, 1, "Please enter a valid option. Press \'x\' to continue.");
                 wrefresh(win);
-                stop = tolower(getch());
+                stop = tolower(wgetch(win));
             }
         }
     }
@@ -703,7 +703,7 @@ void Menu::printMenu()
     mvwprintw(win,9, 1, "Enter the letter of your choice: ");
     wrefresh(win);
 
-    response = tolower(getch());
+    response = tolower(wgetch(win));
     move(0, 0);
     werase(win);
     box(win,0,0);
@@ -757,36 +757,36 @@ char Menu::printEntry(int index, vector<Manga_Record> mangaList){
 
     mvwprintw(win,2, 1, "=========================================");
 
-    attron(COLOR_PAIR(3));
-    mvprintw(3, 1, "Name: ");
-    attron(COLOR_PAIR(2));
-    mvprintw(3, 7, manga.getName().data());
-    mvprintw(3, manga.getName().size() + 7, ".");
+    wattron(win, COLOR_PAIR(3));
+    mvwprintw(win, 3, 1, "Name: ");
+    wattron(win, COLOR_PAIR(2));
+    mvwprintw(win, 3, 7, manga.getName().data());
+    mvwprintw(win, 3, manga.getName().size() + 7, ".");
 
-    attron(COLOR_PAIR(3));
-    mvprintw(4, 1, "Genres: ");
-    attron(COLOR_PAIR(2));
+    wattron(win, COLOR_PAIR(3));
+    mvwprintw(win, 4, 1, "Genres: ");
+    wattron(win, COLOR_PAIR(2));
     int rowPos = 9;
     for (int i = 0; i < manga.getGenres().size() - 1; i++){
-        mvprintw(4, rowPos, manga.getGenres().at(i).data());
-        mvprintw(4, rowPos + manga.getGenres().at(i).length(), ", ");
+        mvwprintw(win, 4, rowPos, manga.getGenres().at(i).data());
+        mvwprintw(win, 4, rowPos + manga.getGenres().at(i).length(), ", ");
         rowPos += manga.getGenres().at(i).length() + 2;
     }
-    mvprintw(4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
-    mvprintw(4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
+    mvwprintw(win, 4, rowPos, manga.getGenres().at(manga.getGenres().size() - 1).data());
+    mvwprintw(win, 4, rowPos + manga.getGenres().at(manga.getGenres().size() - 1).length(), ".");
         
     
-    attron(COLOR_PAIR(3));
-    mvprintw(5, 1, "Authors: ");
-    attron(COLOR_PAIR(2));
+    wattron(win, COLOR_PAIR(3));
+    mvwprintw(win, 5, 1, "Authors: ");
+    wattron(win, COLOR_PAIR(2));
     rowPos = 10;
     for (int i = 0; i < manga.getAuthors().size() - 1; i++){
-        mvprintw(5, rowPos, manga.getAuthors().at(i).data());
-        mvprintw(5, rowPos + manga.getAuthors().at(i).length(), ", ");
+        mvwprintw(win, 5, rowPos, manga.getAuthors().at(i).data());
+        mvwprintw(win, 5, rowPos + manga.getAuthors().at(i).length(), ", ");
         rowPos += manga.getAuthors().at(i).length() + 2;
     }
-    mvprintw(5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
-    mvprintw(5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
+    mvwprintw(win, 5, rowPos, manga.getAuthors().at(manga.getAuthors().size()-1).data());
+    mvwprintw(win, 5, rowPos + manga.getAuthors().at(manga.getAuthors().size()-1).length(), ".");
 
     wattron(win, COLOR_PAIR(3));
     mvwprintw(win,6, 1, "Status: ");
@@ -804,23 +804,18 @@ char Menu::printEntry(int index, vector<Manga_Record> mangaList){
     mvwprintw(win,7, 1, "Year of release: ");
     wattron(win, COLOR_PAIR(2));
     string yearRel = to_string(manga.getYear());
-    char arrYear[4];
-    for (int n = 0; n < 4; n++)
-    {
-        arrYear[n] = yearRel[n];
-    }
-    mvwprintw(win,7, 18, arrYear);
+    mvwprintw(win,7, 18, yearRel.data());
 
     wattron(win, COLOR_PAIR(3));
     mvwprintw(win,9, 1, "Enter \'z\' to move backwards \'c\' to move forward and \'e\' to exit");
     wrefresh(win);
-    char output = tolower(getch());
+    char output = tolower(wgetch(win));
     while (output != 'z' && output != 'c' && output != 'e')
     {
         wattron(win, COLOR_PAIR(1));
         mvwprintw(win,11, 1, "Enter a valid action: ");
         wrefresh(win);
-        output = tolower(getch());
+        output = tolower(wgetch(win));
     }
     return output;
 }
@@ -870,7 +865,7 @@ void Menu::addEntry()
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,1, 1, "Entry already exists. Press \'x\' to return to menu.");
                     wrefresh(win);
-                    stop = tolower(getch());
+                    stop = tolower(wgetch(win));
                     werase(win);
                     wrefresh(win);
                 }   
@@ -912,7 +907,7 @@ void Menu::addEntry()
                 wattron(win, COLOR_PAIR(1));
                 mvwprintw(win,1, 1, "Please enter an author. Press \'x\' to continue.");
                 wrefresh(win);
-                 stop = tolower(getch());
+                 stop = tolower(wgetch(win));
             }  
         }
         else if (toLowerStr(deleteWhitespace(string(entry))) == "stop")
@@ -930,7 +925,7 @@ void Menu::addEntry()
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,1, 1, "Please enter an author. Press \'x\' to continue.");
                     wrefresh(win);
-                    stop = tolower(getch());
+                    stop = tolower(wgetch(win));
                 }   
             }
         }
@@ -953,9 +948,9 @@ void Menu::addEntry()
 
         wattron(win, COLOR_PAIR(1));
         mvwprintw(win,1, 1, "Enter the manga genres one at a time. ");
-        mvwprintw(win,1, 39, " Enter \"stop\" to stop: ");
+        mvwprintw(win,3, 1, " Enter \"stop\" to stop: ");
         wattron(win, COLOR_PAIR(3));
-        mvwprintw(win,3, 1, "Enter a genre: ");
+        mvwprintw(win,5, 1, "Enter a genre: ");
         wrefresh(win);
 
         wgetstr(win, entry);
@@ -971,7 +966,7 @@ void Menu::addEntry()
                 wattron(win, COLOR_PAIR(1));
                 mvwprintw(win,1, 1, "Please enter a genre. Press \'x\' to continue.");
                 wrefresh(win);
-                stop = tolower(getch());
+                stop = tolower(wgetch(win));
             }  
         }
         else if 
@@ -990,7 +985,7 @@ void Menu::addEntry()
                     wattron(win, COLOR_PAIR(1));
                     mvwprintw(win,1, 1, "Please enter a genre. Press \'x\' to continue.");
                     wrefresh(win);
-                    stop = tolower(getch());
+                    stop = tolower(wgetch(win));
                 }  
             }
         }
@@ -1011,13 +1006,13 @@ void Menu::addEntry()
 
     wrefresh(win);
 
-    char res = tolower(getch());
+    char res = tolower(wgetch(win));
     while (res != 'n' && res != 'y' && res != 'e')
     {
         wattron(win, COLOR_PAIR(1));
         mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
         wrefresh(win);
-        res = tolower(getch());
+        res = tolower(wgetch(win));
     }
 
     if (res == 'e')
@@ -1058,9 +1053,10 @@ void Menu::addEntry()
     char stop = 'z';
     while (stop != 'x'){
         wattron(win, COLOR_PAIR(3));
-        mvwprintw(win,1, 1, "Are you sure you want to add this entry? Press \'x\' to continue.");
+        mvwprintw(win,1, 1, "Are you sure you want to add this entry?");
+        mvwprintw(win,3, 1, "Press \'x\' to continue.");
         wrefresh(win);
-        stop = tolower(getch());
+        stop = tolower(wgetch(win));
     }  
 
     werase(win);
@@ -1072,13 +1068,13 @@ void Menu::addEntry()
     mvwprintw(win,1, 1, "Confirm (Y)es or (N)o");
     wattron(win, COLOR_PAIR(3));
     wrefresh(win);
-    int userResponse = tolower(getch());
+    int userResponse = tolower(wgetch(win));
     while (userResponse != 'n' && userResponse != 'y')
     {
         wattron(win, COLOR_PAIR(1));
         mvwprintw(win,3, 1, "Your response is invalid, please try again: ");
         wrefresh(win);
-        userResponse = tolower(getch());
+        userResponse = tolower(wgetch(win));
     }
 
     werase(win);
