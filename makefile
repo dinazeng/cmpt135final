@@ -18,7 +18,7 @@
 #   -g puts debugging info into the executables (makes them larger)
 CPPFLAGS = -std=c++17 -Wall -Wextra -Werror -Wfatal-errors -Wno-sign-compare -Wnon-virtual-dtor -g
 
-Final_Main: Final.o Database.o Manga_record.o Menu.o
+Final_Main: Final.o Database.o Manga_Record.o Menu.o
 	g++ -o app Final.o Database.o Manga_Record.o Menu.o -lncurses
 
 Final: 
