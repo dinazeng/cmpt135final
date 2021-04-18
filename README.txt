@@ -26,7 +26,9 @@ Limitations
 
 --limit of 99 characters per manga name and 9 charaters per year
 
---user cannot enter any new entries with "exit" for: name, genres or authors
+--user cannot enter any new entries with "exit" or for: name, genres or authors
+
+--user cannot enter any new entries with the exact string "stop" for genres or authors
 
 --no spell check available (if a user enters a string it will be displayed in that exact format)
 
@@ -39,8 +41,6 @@ Known Bugs
 
 --if the user makes a mistake while entering information,it must be deleted and reupdated
 
---strings sometimes become corrupted when displayed
-
 --(valgrind only) scrolling through entries will flash between the window and the terminal
 
 Extra Features
@@ -50,7 +50,7 @@ Extra Features
 
 --display is featured in a window
 
---user can exit at any point while adding a new extry
+--user can exit at any point while adding a new extry by typing in exit
 
 --user can confirm additions and deletions to the database
 
